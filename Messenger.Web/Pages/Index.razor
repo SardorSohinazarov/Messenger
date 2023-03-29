@@ -1,10 +1,13 @@
 ﻿@page "/"
-//@using Microsoft.AspNetCore.SignalR.Client;
+@using Microsoft.AspNetCore.SignalR.Client;
 @inject HttpClient Http
 
 @foreach(var message in messages)
 {
     <p>@message.Item1 : @message.Item2</p>
 }
+
+<MudTextField @bind-Value="MessageText" Label="Text" Variant="Variant.Outlined"></MudTextField>
+<MudTextField @bind-Value="UserName" Label="Username" Variant="Variant.Text"></MudTextField>
 
 <MudButton OnClick="SendMessageToServer">Send</MudButton>

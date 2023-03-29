@@ -4,6 +4,9 @@ namespace Messenger.Web.Pages
 {
     public partial class Index
     {
+        public string MessageText { get; set; }
+        public string UserName { get; set; }
+
         private readonly List<Tuple<string, string>> messages =
             new List<Tuple<string, string>>();
 
@@ -30,7 +33,7 @@ namespace Messenger.Web.Pages
         {
             if (_hubConnection.State == HubConnectionState.Connected)
             {
-                await _hubConnection.InvokeAsync("SendMessagesAsync", "sardor", "qalesan");
+                await _hubConnection.InvokeAsync("SendMessagesAsync", UserName, MessageText);
             }
         }
     }
