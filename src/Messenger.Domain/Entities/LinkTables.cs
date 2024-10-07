@@ -7,7 +7,7 @@ namespace Messenger.Domain.Entities
         public bool IsBlocked { get; set; }
 
         public long UserId { get; set; }
-        public Guid ChatId { get; set; }
+        public long ChatId { get; set; }
 
         public User User { get; set; }
         public Chat Chat { get; set; }
