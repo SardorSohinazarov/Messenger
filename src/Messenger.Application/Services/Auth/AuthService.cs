@@ -10,6 +10,7 @@ using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -35,6 +36,7 @@ namespace Messenger.Application.Services.Auth
             _httpContextAccessor = httpContextAccessor;
         }
 
+        //Todo Email tasdiqlashda code malum vaqt ichida kiritilishi kerak (masalan: 3:00)
         public async Task<TokenDto> ConfirmEmailAsync([FromForm]EmailConfirmationDto emailConfirmationDto)
         {
             // Foydalanuvchini email orqali topish
@@ -118,8 +120,87 @@ namespace Messenger.Application.Services.Auth
             await _messengerDbContext.SaveChangesAsync();
 
             var confirmationLink = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}/api/Auth/confirm-email?Email={Uri.EscapeDataString(user.Email)}&ConfirmationCode={confirmationCode}";
-            var emailBody = $"Click the link to confirm your email: <a href='{confirmationLink}'>Confirm Email</a>";
-            await _emailService.SendEmailAsync(user.Email, user.FirstName, "Confirm Your Email", emailBody);
+            var emailBody = new StringBuilder(@"""<!DOCTYPE html>
+                <html lang=""uz"">
+                <head>
+                    <meta charset=""UTF-8"">
+                    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f9f9f9;
+                            margin: 0;
+                            padding: 20px;
+                        }
+                        .container {
+                            background-color: #ffffff;
+                            border-radius: 5px;
+                            padding: 20px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            text-align: center; /* O'rtaga joylash uchun */
+                        }
+                        h1 {
+                            color: #333333;
+                        }
+                        p {
+                            color: #555555;
+                            line-height: 1.6;
+                        }
+                        .button {
+                            background-color: #007bff;
+                            color: #ffffff;
+                            padding: 10px 20px;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            display: inline-block;
+                            margin-top: 20px;
+                        }
+                        .code {
+                            font-size: 36px; /* Tasdiqlash kodining o'lchami */
+                            font-weight: bold; /* Katta harfda bo'lishi */
+                            color: #007bff; /* Tasdiqlash kodi uchun rang */
+                            padding: 20px;
+                            border: 2px solid #007bff; /* Tasdiqlash kodi uchun chegara */
+                            display: inline-block; /* Hujjatning o'ziga xos joyini saqlash */
+                            margin-top: 30px; /* O'rta joylash uchun yuqoridan bo'shliq */
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            font-size: 12px;
+                            color: #888888;
+                            text-align: center;
+                        }
+                    </style>
+                </head>
+                <body>
+
+                <div class=""container"">
+                    <h1>Hisobingizni tasdiqlash!</h1>
+                    <p>Salom <strong>FOYDALANUVCHIISMI</strong>,</p>
+                    <p>Ro'yxatdan o'tganingiz uchun rahmat! Biz xizmatlarimizdan foydalanishni boshlashdan oldin, elektron pochtangizni tasdiqlashingiz kerak.</p>
+    
+                    <p>Quyidagi tasdiqlash kodini kiriting:</p>
+                    <div class=""code"">KOD</div> <!-- Tasdiqlash kodi -->
+    
+                    <p>Yoki tasdiqlash uchun quyidagi tugmani bosing:</p>
+                    <a href=""LINK"" class=""button"">Tasdiqlash uchun boshing</a>
+    
+                    <p>Biz bilan qoling va ajoyib imkoniyatlardan foydalaning!</p>
+                </div>
+
+                <div class=""footer"">
+                    <p>Yana bir savolingiz bo'lsa, biz bilan bog'laning.</p>
+                    <p>Bizning manzilimiz: sardorstudent0618@gmail.com</p>
+                </div>
+
+                </body>
+                </html>""");
+
+            emailBody.Replace("KOD", confirmationCode); // Tasdiqlash kodi
+            emailBody.Replace("LINK", confirmationLink); // Tasdiqlash linki
+            emailBody.Replace("FOYDALANUVCHIISMI", user.FirstName); // Foydalanuvchi ismi
+
+            await _emailService.SendEmailAsync(user.Email, user.FirstName, "Confirm Your Email", emailBody.ToString());
         }
     }
 }
