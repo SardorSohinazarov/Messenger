@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Messenger.Infrastructure.Migrations
 {
     [DbContext(typeof(MessengerDbContext))]
-    [Migration("20241007095606_Init")]
+    [Migration("20241008191533_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -36,9 +36,8 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -47,9 +46,8 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("LastModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -85,9 +83,8 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("ExpireDate")
                         .HasColumnType("integer");
@@ -99,9 +96,8 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("LastModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -132,16 +128,14 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("LastModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("SmallFileId")
                         .IsRequired()
@@ -171,9 +165,8 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("boolean");
@@ -181,9 +174,8 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("LastModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -205,10 +197,17 @@ namespace Messenger.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("ConfirmationCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -217,21 +216,22 @@ namespace Messenger.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("LanguageCode")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("LastModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -246,8 +246,7 @@ namespace Messenger.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
+                    b.Property<string>("UserName")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

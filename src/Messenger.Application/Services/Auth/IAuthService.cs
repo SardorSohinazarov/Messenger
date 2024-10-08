@@ -1,6 +1,6 @@
 ﻿using Messenger.Application.DataTransferObjects.Auth;
 
-namespace Messenger.Application.Services
+namespace Messenger.Application.Services.Auth
 {
     public interface IAuthService
     {

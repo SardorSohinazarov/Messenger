@@ -23,9 +23,9 @@ namespace Messenger.Infrastructure.Migrations
                     Username = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -40,16 +40,19 @@ namespace Messenger.Infrastructure.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirstName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    LanguageCode = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: true),
+                    UserName = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    LanguageCode = table.Column<string>(type: "text", nullable: true),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
                     Salt = table.Column<string>(type: "text", nullable: false),
                     RefreshToken = table.Column<string>(type: "text", nullable: false),
                     RefreshTokenExpireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    ConfirmationCode = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -66,9 +69,9 @@ namespace Messenger.Infrastructure.Migrations
                     InviteLink = table.Column<string>(type: "text", nullable: false),
                     ExpireDate = table.Column<int>(type: "integer", nullable: true),
                     ChatId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -93,9 +96,9 @@ namespace Messenger.Infrastructure.Migrations
                     BigFileId = table.Column<string>(type: "text", nullable: false),
                     BigFileUniqueId = table.Column<string>(type: "text", nullable: false),
                     ChatId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -117,9 +120,9 @@ namespace Messenger.Infrastructure.Migrations
                     IsBlocked = table.Column<bool>(type: "boolean", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     ChatId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
