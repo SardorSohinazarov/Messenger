@@ -26,12 +26,21 @@ namespace Messenger.Api.Controllers
 
             return Ok();
         }
-        
-        [HttpPost("email")]
-        public async Task<IActionResult> Register()
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery]EmailConfirmationDto emailConfirmationDto)
         {
-            await _emailService.SendEmailAsync("sardorstudent0618@gmail.com", "isoqovxudoyorbek@gmail.com", "Qales", "Nima gap!");
-            return Ok();
+            var token = await _authService.ConfirmEmailAsync(emailConfirmationDto);
+
+            return Ok(token);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+            var token = await _authService.LoginAsync(loginDto);
+
+            return Ok(token);
         }
     }
 }

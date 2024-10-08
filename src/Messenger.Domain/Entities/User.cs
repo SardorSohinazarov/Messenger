@@ -16,6 +16,7 @@ namespace Messenger.Domain.Entities
         public string RefreshToken { get; set; }  // Foydalanuvchining yangilanish tokeni
         public DateTime RefreshTokenExpireDate { get; set; }  // Yangilanish tokenining amal qilish muddati
         public string ConfirmationCode { get; set; }  // Foydalanuvchi ro'yxatdan o'tishni tasdiqlash kodi
+        public bool IsEmailConfirmed { get; set; }  // Foydalanuvchi elektron pochtasini tasdiqlaganmi
 
         public ICollection<ChatUser> Chats { get; set; }  // Foydalanuvchi chatlari
     }
