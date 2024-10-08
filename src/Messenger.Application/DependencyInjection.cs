@@ -2,6 +2,7 @@
 using Messenger.Application.Helpers;
 using Messenger.Application.Services.Auth;
 using Messenger.Application.Services.Email;
+using Messenger.Application.Services.Token;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +13,6 @@ namespace Messenger.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             services.Configure<SmtpSettings>(options =>
             {
@@ -23,7 +23,11 @@ namespace Messenger.Application
                 options.Password = configuration["SmtpSettings:Password"];
             });
 
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ITokenService, TokenService>();
+
+            services.AddHttpContextAccessor();
 
 
             return services;
