@@ -39,6 +39,12 @@ namespace Messenger.Application.Services.Auth
         //Todo Email tasdiqlashda code malum vaqt ichida kiritilishi kerak (masalan: 3:00)
         public async Task<TokenDto> ConfirmEmailAsync([FromForm]EmailConfirmationDto emailConfirmationDto)
         {
+            var validator = new EmailConfirmationDtoValidator();
+            var result = await validator.ValidateAsync(emailConfirmationDto);
+
+            if (!result.IsValid)
+                throw new ValidationException("Model email tasdiqlash uchun yaroqsiz", result.Errors);
+
             var user = await _messengerDbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == emailConfirmationDto.Email);
 
@@ -51,7 +57,7 @@ namespace Messenger.Application.Services.Auth
             if (user.ConfirmationCode != emailConfirmationDto.ConfirmationCode)
                 throw new Exception("Tasdiqlash kodi noto'g'ri.");
 
-            user.IsEmailConfirmed = true; // Tasdiqlangan foydalanuvchi holatini yangilash
+            user.IsEmailConfirmed = true;
             await _messengerDbContext.SaveChangesAsync();
 
             return await _tokenService.GenerateTokenAsync(user);
@@ -85,8 +91,16 @@ namespace Messenger.Application.Services.Auth
             return await _tokenService.GenerateTokenAsync(user);
         }
 
-        public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto) 
-            => await _tokenService.RefreshTokenAsync(refreshTokenDto);
+        public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
+        {
+            var validator = new RefreshTokenDtoValidator();
+            var result = await validator.ValidateAsync(refreshTokenDto);
+
+            if (!result.IsValid)
+                throw new ValidationException("Refresh token yangilash uchun yaroqsiz", result.Errors);
+
+            return await _tokenService.RefreshTokenAsync(refreshTokenDto);
+        }
 
 
         public async Task RegisterAsync(RegisterDto registerDto)
