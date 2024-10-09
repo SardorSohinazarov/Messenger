@@ -1,4 +1,5 @@
-﻿using Messenger.Application.DataTransferObjects.Auth;
+﻿using Messenger.Application.DataTransferObjects;
+using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Application.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,14 @@ namespace Messenger.Api.Controllers
         public async Task<IActionResult> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
         {
             var token = await _authService.RefreshTokenAsync(refreshTokenDto);
+
+            return Ok(token);
+        }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> LoginWithGoogleAccountAsync(GoogleLoginDto googleLoginDto)
+        {
+            var token = await _authService.LoginWithGoogleAccountAsync(googleLoginDto);
 
             return Ok(token);
         }

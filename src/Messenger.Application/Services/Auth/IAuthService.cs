@@ -1,11 +1,12 @@
-﻿using Messenger.Application.DataTransferObjects.Auth;
+﻿using Messenger.Application.DataTransferObjects;
+using Messenger.Application.DataTransferObjects.Auth;
 
 namespace Messenger.Application.Services.Auth
 {
     public interface IAuthService
     {
         Task<TokenDto> LoginAsync(LoginDto loginDto);
-        //Task<TokenDto> LoginWithGoogleAccountAsync(string returnUrl = "/");
+        Task<TokenDto> LoginWithGoogleAccountAsync(GoogleLoginDto googleLoginDto);
         //Task<TokenDto> LoginWithFacebookAccountAsync(string returnUrl = "/");
         //Task<TokenDto> LoginWithTwitterAccountAsync(string returnUrl = "/");
         //Task<TokenDto> LoginWithMicrosoftAccountAsync(string returnUrl = "/");

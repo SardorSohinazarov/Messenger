@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Messenger.Application.DataTransferObjects;
 using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Application.Helpers.PasswordHasher;
 using Messenger.Application.Services.Email;
@@ -8,9 +9,13 @@ using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -21,19 +26,22 @@ namespace Messenger.Application.Services.Auth
         private readonly IEmailService _emailService;
         private readonly ITokenService _tokenService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly HttpClient _httpClient;
 
         public AuthService(
             MessengerDbContext messengerDbContext,
             IPasswordHasher passwordHasher,
             IEmailService emailService,
             ITokenService tokenService,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            HttpClient httpClient)
         {
             _messengerDbContext = messengerDbContext;
             _passwordHasher = passwordHasher;
             _emailService = emailService;
             _tokenService = tokenService;
             _httpContextAccessor = httpContextAccessor;
+            _httpClient = httpClient;
         }
 
         //Todo Email tasdiqlashda code malum vaqt ichida kiritilishi kerak (masalan: 3:00)
@@ -91,6 +99,50 @@ namespace Messenger.Application.Services.Auth
             return await _tokenService.GenerateTokenAsync(user);
         }
 
+        public async Task<TokenDto> LoginWithGoogleAccountAsync(GoogleLoginDto googleLoginDto)
+        {
+            var userInfo = await GetGoogleUserInfoAsync(googleLoginDto.AccessToken);
+
+            var user = await _messengerDbContext.Users.FirstOrDefaultAsync(x => x.Email == userInfo.Email);
+
+            if (user == null)
+            {
+                var salt = Guid.NewGuid().ToString();
+                var passwordHash = _passwordHasher.Encrypt(salt, salt);
+                var refreshToken = Guid.NewGuid().ToString();
+
+                user = new User
+                {
+                    Email = userInfo.Email,
+                    FirstName = userInfo.Name,
+                    RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30),
+                    ConfirmationCode = null,
+                    IsEmailConfirmed = true,
+                    RefreshToken = refreshToken,
+                    Salt = salt,
+                    PasswordHash = passwordHash,
+                    UserName = userInfo.Email.Split('@')[0]
+                };
+
+                await _messengerDbContext.Users.AddAsync(user);
+                await _messengerDbContext.SaveChangesAsync();
+            }
+
+            return await _tokenService.GenerateTokenAsync(user);
+        }
+
+        private async Task<GoogleUserInfo> GetGoogleUserInfoAsync(string accessToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://www.googleapis.com/oauth2/v2/userinfo");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<GoogleUserInfo>(jsonResponse);
+        }
+
         public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
         {
             var validator = new RefreshTokenDtoValidator();
@@ -101,7 +153,6 @@ namespace Messenger.Application.Services.Auth
 
             return await _tokenService.RefreshTokenAsync(refreshTokenDto);
         }
-
 
         public async Task RegisterAsync(RegisterDto registerDto)
         {
