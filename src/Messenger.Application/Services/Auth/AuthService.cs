@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.Helpers;
+using Messenger.Application.Helpers.PasswordHasher;
 using Messenger.Application.Services.Email;
 using Messenger.Application.Services.Token;
 using Messenger.Application.Validators;
@@ -10,7 +10,6 @@ using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using System.Text;
 
 namespace Messenger.Application.Services.Auth
@@ -40,7 +39,6 @@ namespace Messenger.Application.Services.Auth
         //Todo Email tasdiqlashda code malum vaqt ichida kiritilishi kerak (masalan: 3:00)
         public async Task<TokenDto> ConfirmEmailAsync([FromForm]EmailConfirmationDto emailConfirmationDto)
         {
-            // Foydalanuvchini email orqali topish
             var user = await _messengerDbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == emailConfirmationDto.Email);
 
@@ -50,21 +48,23 @@ namespace Messenger.Application.Services.Auth
             if (user is null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
-            // Tasdiqlash kodini tekshirish
             if (user.ConfirmationCode != emailConfirmationDto.ConfirmationCode)
                 throw new Exception("Tasdiqlash kodi noto'g'ri.");
 
-            // Emailni tasdiqlash
             user.IsEmailConfirmed = true; // Tasdiqlangan foydalanuvchi holatini yangilash
             await _messengerDbContext.SaveChangesAsync();
 
-            // Token yaratish
-            return await _tokenService.GenerateTokenAsync(user); // Token yaratish funksiyasini chaqirish
+            return await _tokenService.GenerateTokenAsync(user);
         }
 
         public async Task<TokenDto> LoginAsync(LoginDto loginDto)
         {
-            // Foydalanuvchini email bo'yicha qidirish
+            var validator = new LoginDtoValidator();
+            var result = await validator.ValidateAsync(loginDto);
+
+            if (!result.IsValid)
+                throw new ValidationException("Model login qilish uchun yaroqsiz", result.Errors);
+
             var user = await _messengerDbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
@@ -82,7 +82,6 @@ namespace Messenger.Application.Services.Auth
             user.RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30);
             await _messengerDbContext.SaveChangesAsync();
 
-            // Token yaratish
             return await _tokenService.GenerateTokenAsync(user);
         }
 
@@ -92,17 +91,17 @@ namespace Messenger.Application.Services.Auth
 
         public async Task RegisterAsync(RegisterDto registerDto)
         {
-            var existingUser = await _messengerDbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == registerDto.Email || u.PhoneNumber == registerDto.PhoneNumber);
-
-            if (existingUser != null)
-                throw new Exception("Ushbu email yoki phone number allaqachon ro'yxatdan o'tgan.");
-
             var validator = new RegisterDtoValidator();
             var result = await validator.ValidateAsync(registerDto);
 
             if (!result.IsValid)
                 throw new ValidationException("Model ro'yhatdan o'tish uchun yaroqsiz",result.Errors);
+
+            var existingUser = await _messengerDbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == registerDto.Email || u.PhoneNumber == registerDto.PhoneNumber);
+
+            if (existingUser != null)
+                throw new Exception("Ushbu email yoki phone number allaqachon ro'yxatdan o'tgan.");
 
             var confirmationCode = new Random().Next(1000, 9999).ToString();
             var salt = Guid.NewGuid().ToString();

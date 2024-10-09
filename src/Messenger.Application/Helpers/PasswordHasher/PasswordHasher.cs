@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Messenger.Application.Helpers
+namespace Messenger.Application.Helpers.PasswordHasher
 {
     public class PasswordHasher : IPasswordHasher
     {

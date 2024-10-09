@@ -1,4 +1,4 @@
-﻿namespace Messenger.Application.Helpers
+﻿namespace Messenger.Application.Helpers.PasswordHasher
 {
     public interface IPasswordHasher
     {

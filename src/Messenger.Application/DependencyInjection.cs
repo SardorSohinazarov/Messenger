@@ -1,5 +1,5 @@
 ﻿using Messenger.Application.DataTransferObjects;
-using Messenger.Application.Helpers;
+using Messenger.Application.Helpers.PasswordHasher;
 using Messenger.Application.Services.Auth;
 using Messenger.Application.Services.Email;
 using Messenger.Application.Services.Token;
@@ -28,7 +28,6 @@ namespace Messenger.Application
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddHttpContextAccessor();
-
 
             return services;
         }
