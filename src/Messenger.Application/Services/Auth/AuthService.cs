@@ -43,6 +43,9 @@ namespace Messenger.Application.Services.Auth
             var user = await _messengerDbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == emailConfirmationDto.Email);
 
+            if(user.IsEmailConfirmed)
+                throw new Exception("Email allaqachon tasdiqlangan, Login qiling!");
+
             if (user is null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
