@@ -10,6 +10,7 @@ using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text;
 
 namespace Messenger.Application.Services.Auth
@@ -77,14 +78,17 @@ namespace Messenger.Application.Services.Auth
             if (!_passwordHasher.Verify(user.PasswordHash, loginDto.Password, user.Salt))
                 throw new ValidationException("Noto'g'ri parol.");
 
+            user.RefreshToken = Guid.NewGuid().ToString();
+            user.RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30);
+            await _messengerDbContext.SaveChangesAsync();
+
             // Token yaratish
             return await _tokenService.GenerateTokenAsync(user);
         }
 
-        public Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto) 
+            => await _tokenService.RefreshTokenAsync(refreshTokenDto);
+
 
         public async Task RegisterAsync(RegisterDto registerDto)
         {
@@ -116,7 +120,7 @@ namespace Messenger.Application.Services.Auth
                 Salt = salt,
                 PasswordHash = passwordHash,
                 RefreshToken = refreshToken,
-                RefreshTokenExpireDate = DateTime.UtcNow.AddMinutes(5),
+                RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30),
             };
 
             await _messengerDbContext.Users.AddAsync(user);

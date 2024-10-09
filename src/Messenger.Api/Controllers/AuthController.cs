@@ -1,6 +1,5 @@
 ﻿using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Application.Services.Auth;
-using Messenger.Application.Services.Email;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.Api.Controllers
@@ -34,6 +33,14 @@ namespace Messenger.Api.Controllers
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             var token = await _authService.LoginAsync(loginDto);
+
+            return Ok(token);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
+        {
+            var token = await _authService.RefreshTokenAsync(refreshTokenDto);
 
             return Ok(token);
         }
