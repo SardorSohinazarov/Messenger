@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Messenger.Domain.Entities;
+using Messenger.Domain.Common;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Messenger.Infrastructure.Persistence
 {
@@ -19,7 +22,38 @@ namespace Messenger.Infrastructure.Persistence
         //constructorlar
         public MessengerDbContext() { }
 
-        public MessengerDbContext(DbContextOptions<MessengerDbContext> options) : base(options) 
-            => Database.Migrate(); // Migratsiyani avtomatik ishga tushirish
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public MessengerDbContext(DbContextOptions<MessengerDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
+        {
+            Database.Migrate(); // Migratsiyani avtomatik ishga tushirish
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var softDeleteEntries = ChangeTracker
+                .Entries<ISoftDeletable>()
+                .Where(x => x.State == EntityState.Deleted);
+
+            foreach (var entry in softDeleteEntries)
+            {
+                entry.State = EntityState.Modified;
+                entry.Property(nameof(ISoftDeletable.IsDeleted)).CurrentValue = true;
+            }
+
+            var newEntries = ChangeTracker
+                .Entries<Auditable<long>>() // Todo faqat long uchun bo'p qoldi, shuni to'grilash kerak hammasi uchun qilib
+                .Where(x => x.State == EntityState.Added);
+
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+            foreach (var entry in newEntries)
+            {
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+                entry.Entity.CreatedBy = userId == null ? default : long.Parse(userId);
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
     }
 }
