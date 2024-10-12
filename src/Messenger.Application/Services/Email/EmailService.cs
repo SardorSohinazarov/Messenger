@@ -1,5 +1,5 @@
 ﻿using Messenger.Application.DataTransferObjects;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
 
@@ -9,8 +9,8 @@ namespace Messenger.Application.Services.Email
     {
         private readonly SmtpSettings _smtpSettings;
 
-        public EmailService(IOptions<SmtpSettings> smtpSettings) 
-            => _smtpSettings = smtpSettings.Value;
+        public EmailService(IConfiguration configuration) 
+            => _smtpSettings = configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
 
         public async Task SendEmailAsync(string to, string toDisplayName, string subject, string body)
         {

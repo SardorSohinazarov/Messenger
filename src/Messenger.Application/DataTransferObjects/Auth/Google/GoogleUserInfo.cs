@@ -1,4 +1,4 @@
-﻿namespace Messenger.Application.DataTransferObjects
+﻿namespace Messenger.Application.DataTransferObjects.Auth.Google
 {
     public class GoogleUserInfo
     {
