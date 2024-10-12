@@ -2,7 +2,7 @@
 
 namespace Messenger.Domain.Entities
 {
-    public class ChatUser : Auditable<Guid>
+    public class ChatUser : Auditable<Guid>, ISoftDeletable
     {
         public bool IsBlocked { get; set; }
 
@@ -11,5 +11,6 @@ namespace Messenger.Domain.Entities
 
         public User User { get; set; }
         public Chat Chat { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

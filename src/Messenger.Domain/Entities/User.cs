@@ -2,7 +2,7 @@
 
 namespace Messenger.Domain.Entities
 {
-    public class User : Auditable<long>
+    public class User : Auditable<long>, ISoftDeletable
     {
         public string FirstName { get; set; }  // Foydalanuvchi ismi
         public string? LastName { get; set; }  // Ixtiyoriy. Foydalanuvchi familiyasi
@@ -19,6 +19,7 @@ namespace Messenger.Domain.Entities
         public bool IsEmailConfirmed { get; set; }  // Foydalanuvchi elektron pochtasini tasdiqlaganmi
 
         public ICollection<ChatUser> Chats { get; set; }  // Foydalanuvchi chatlari
+        public bool IsDeleted { get; set; }
     }
 
     public class UserProfilePhotos
