@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Messenger.Infrastructure.Migrations
 {
     [DbContext(typeof(MessengerDbContext))]
-    [Migration("20241008191533_Init")]
-    partial class Init
+    [Migration("20241012215110_Chat-UserName-Nullable")]
+    partial class ChatUserNameNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,8 +40,10 @@ namespace Messenger.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -50,7 +52,6 @@ namespace Messenger.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
@@ -61,7 +62,6 @@ namespace Messenger.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -86,12 +86,15 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("ExpireDate")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("InviteLink")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -131,6 +134,9 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -169,6 +175,9 @@ namespace Messenger.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsBlocked")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastModifiedAt")
@@ -214,6 +223,12 @@ namespace Messenger.Infrastructure.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEmailConfirmed")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LanguageCode")
                         .HasColumnType("text");
