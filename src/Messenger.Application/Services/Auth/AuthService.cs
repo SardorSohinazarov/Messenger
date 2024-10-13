@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using Messenger.Application.DataTransferObjects;
-using Messenger.Application.DataTransferObjects.Auth;
+﻿using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Application.Helpers.PasswordHasher;
 using Messenger.Application.Services.Email;
 using Messenger.Application.Services.Token;
@@ -9,13 +7,13 @@ using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using Messenger.Application.DataTransferObjects.Auth.Google;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -101,9 +99,11 @@ namespace Messenger.Application.Services.Auth
 
         public async Task<TokenDto> LoginWithGoogleAccountAsync(GoogleLoginDto googleLoginDto)
         {
-            var userInfo = await GetGoogleUserInfoAsync(googleLoginDto.AccessToken);
+            var userInfo = await GetGoogleUserInfoAsync(googleLoginDto.IdToken);
 
             var user = await _messengerDbContext.Users.FirstOrDefaultAsync(x => x.Email == userInfo.Email);
+
+            //Todo userInfo.Picture ni ham saqlab olish kerak
 
             if (user == null)
             {
