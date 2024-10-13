@@ -99,6 +99,7 @@ namespace Messenger.Application.Services.Chats
 
         public async Task<ChatDetailsViewModel> UpdateChatAsync(ChatModificationDto chatModificationDto)
         {
+            //adminmi
             var userId = _userContextService.GetCurrentUserId();
             var chatId = chatModificationDto.Id;
 
