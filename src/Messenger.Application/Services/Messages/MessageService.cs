@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Messenger.Application.DataTransferObjects.Messages;
-using Messenger.Application.Helpers.UserContetx;
+using Messenger.Application.Helpers.UserContext;
 using Messenger.Application.Validators.Messages;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
@@ -14,12 +14,12 @@ namespace Messenger.Application.Services.Messages
     public class MessageService : IMessagesService
     {
         private readonly MessengerDbContext _messengerDbContext;
-        private readonly UserContextService _userContextService;
+        private readonly IUserContextService _userContextService;
         private readonly IMapper _mapper;
 
         public MessageService(
             MessengerDbContext messengerDbContext,
-            UserContextService userContextService,
+            IUserContextService userContextService,
             IMapper mapper)
         {
             _messengerDbContext = messengerDbContext;

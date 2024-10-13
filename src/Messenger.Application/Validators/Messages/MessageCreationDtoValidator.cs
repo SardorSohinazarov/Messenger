@@ -33,8 +33,8 @@ namespace Messenger.Application.Validators.Messages
 
             // NewChatMemberId uchun validatsiya (null bo'lishi mumkin)
             RuleFor(message => message.NewChatMemberId)
-                .MaximumLength(50).When(message => !string.IsNullOrEmpty(message.NewChatMemberId))
-                .WithMessage("Yangi chat a'zosi ID 50 belgidan oshmasligi kerak."); // Faqat ID mavjud bo'lsa tekshiriladi.
+                .GreaterThan(0).When(message => message.NewChatMemberId is not null)
+                .WithMessage("New chat member ID 0 dan katta bo'lishi kerak."); // Faqat ID mavjud bo'lsa tekshiriladi.
         }
     }
 }

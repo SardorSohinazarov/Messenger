@@ -25,6 +25,6 @@ namespace Messenger.Application.DataTransferObjects.Messages
         public bool? DeleteChatPhoto { get; set; }            // Chat fotosi o'chirilgan bo'lsa True
         public bool? GroupChatCreated { get; set; }           // Guruh chat yaratilgan bo'lsa True
         public bool? ChannelChatCreated { get; set; }         // Kanal chat yaratilgan bo'lsa True
-        public string NewChatMemberId { get; set; }           // Yangi chat a'zosi ID
+        public long? NewChatMemberId { get; set; }           // Yangi chat a'zosi ID
     }
 }

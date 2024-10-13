@@ -24,9 +24,10 @@ namespace Messenger.Infrastructure.Persistence
         public DbSet<Message> Messages { get; set; }
 
         //constructorlar
-        public MessengerDbContext() { }
-
         private readonly IHttpContextAccessor _httpContextAccessor;
+        public MessengerDbContext(IHttpContextAccessor httpContextAccessor) 
+            => _httpContextAccessor = httpContextAccessor;
+
         public MessengerDbContext(DbContextOptions<MessengerDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
         {
             Database.Migrate(); // Migratsiyani avtomatik ishga tushirish
