@@ -3,6 +3,7 @@ using Messenger.Application.Helpers.PasswordHasher;
 using Messenger.Application.Helpers.UserContetx;
 using Messenger.Application.Services.Auth;
 using Messenger.Application.Services.Chats;
+using Messenger.Application.Services.ChatUsers;
 using Messenger.Application.Services.Email;
 using Messenger.Application.Services.Token;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ namespace Messenger.Application
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IChatUserService, ChatUserService>();
 
             //helpers
             services.AddScoped<IPasswordHasher, PasswordHasher>();

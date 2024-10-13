@@ -61,21 +61,5 @@ namespace Messenger.Api.Controllers
 
             return Ok(chat);
         }
-
-        [HttpGet("generate-link")]
-        public async Task<IActionResult> GenerateChatLinkAsync(long id)
-        {
-            var link = await _chatService.CreateChatInviteLinkAsync(id);
-
-            return Ok(link);
-        }
-
-        [HttpGet("join-chat")]
-        public async Task<IActionResult> JoinChatAsync(string link)
-        {
-            var chat = await _chatService.JoinChatAsync(link);
-
-            return Ok(chat);
-        }
     }
 }

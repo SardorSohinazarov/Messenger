@@ -97,22 +97,5 @@ namespace Messenger.Application.Services.Chats
 
             return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
         }
-
-        public async Task<ChatInviteLinkViewModel> CreateChatInviteLinkAsync(long chatId)
-        {
-            var inviteLink = Guid.NewGuid().ToString("N");
-
-            var chatLink = new ChatInviteLink()
-            {
-                ChatId = chatId,
-                ExpireDate = DateTime.UtcNow.AddDays(1),
-                InviteLink = inviteLink,
-            };
-
-            var entryEntity = await _messengerDbContext.AddAsync(chatLink);
-            await _messengerDbContext.SaveChangesAsync();
-
-            return _mapper.Map<ChatInviteLinkViewModel>(entryEntity.Entity);
-        }
     }
 }

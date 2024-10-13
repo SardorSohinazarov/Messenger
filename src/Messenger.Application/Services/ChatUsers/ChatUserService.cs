@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.Application.Services.ChatUsers
 {
-    public class ChatUserService
+    public class ChatUserService : IChatUserService
     {
         private readonly MessengerDbContext _messengerDbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -132,6 +132,23 @@ namespace Messenger.Application.Services.ChatUsers
             await _messengerDbContext.SaveChangesAsync();
 
             return _mapper.Map<ChatDetailsViewModel>(chatUser.Chat);
+        }
+
+        public async Task<ChatInviteLinkViewModel> CreateChatInviteLinkAsync(long chatId)
+        {
+            var inviteLink = Guid.NewGuid().ToString("N");
+
+            var chatLink = new ChatInviteLink()
+            {
+                ChatId = chatId,
+                ExpireDate = DateTime.UtcNow.AddDays(1),
+                InviteLink = inviteLink,
+            };
+
+            var entryEntity = await _messengerDbContext.AddAsync(chatLink);
+            await _messengerDbContext.SaveChangesAsync();
+
+            return _mapper.Map<ChatInviteLinkViewModel>(entryEntity.Entity);
         }
     }
 }
