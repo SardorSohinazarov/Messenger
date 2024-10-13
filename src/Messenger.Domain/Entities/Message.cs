@@ -31,7 +31,6 @@ namespace Messenger.Domain.Entities
         public bool? GroupChatCreated { get; set; }           // Guruh chat yaratilgan bo'lsa True
         public bool? ChannelChatCreated { get; set; }         // Kanal chat yaratilgan bo'lsa True
         public string NewChatMemberId { get; set; }           // Yangi chat a'zosi ID
-
         public User NewChatMember { get; set; }               // Yangi chat a'zosi
         public bool IsDeleted { get; set; }
     }

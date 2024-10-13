@@ -20,6 +20,9 @@ namespace Messenger.Infrastructure.Persistence
         //link tables
         public DbSet<ChatUser> ChatUsers { get; set; }
 
+        //message va unga aloqador setlar
+        public DbSet<Message> Messages { get; set; }
+
         //constructorlar
         public MessengerDbContext() { }
 

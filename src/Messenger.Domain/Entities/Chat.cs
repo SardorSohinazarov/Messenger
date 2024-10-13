@@ -13,6 +13,7 @@ namespace Messenger.Domain.Entities
 
         public ICollection<ChatUser> Users { get; set; }  // Chat foydalanuvchilari
         public ICollection<ChatInviteLink> InviteLinks { get; set; }  // Chat uchun taklif havolalari
+        public ICollection<Message> Messages { get; set; } // Chatga jo'natilgan messagelar
         public ChatPhoto Photo { get; set; }  // Chat rasmi
         public bool IsDeleted { get; set; }
     }
