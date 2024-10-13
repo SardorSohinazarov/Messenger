@@ -67,7 +67,7 @@ namespace Messenger.Application.Services.Chats
             var chatUser = chat.Users.FirstOrDefault(x => x.UserId == _userContextService.GetCurrentUserId());
 
             if (chatUser is null || !chatUser.IsAdmin)
-                throw new ValidationException("Siz faqat o'zingiz yaratgan chatlarni o'chira olasiz.");
+                throw new ForbiddenException("Siz faqat o'zingiz yaratgan chatlarni o'chira olasiz.");
 
             var entryEntity = _messengerDbContext.Chats.Remove(chat);
             await _messengerDbContext.SaveChangesAsync();
@@ -120,7 +120,7 @@ namespace Messenger.Application.Services.Chats
                 .FirstOrDefaultAsync(x => x.ChatId == chatId && x.UserId == userId);
 
             if (chatUser == null || !chatUser.IsAdmin)
-                throw new NotFoundException("Siz faqat o'zingiz yaratgan chatlarni o'zgartira olasiz.");
+                throw new ForbiddenException("Siz faqat o'zingiz yaratgan chatlarni o'zgartira olasiz.");
 
             var chat = _mapper.Map<Chat>(chatModificationDto);
             var entryEntity = _messengerDbContext.Chats.Update(chat);
