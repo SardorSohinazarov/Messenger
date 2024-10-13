@@ -12,8 +12,8 @@ namespace Messenger.Application.DataTransferObjects.Chats
         public string FirstName { get; set; }  // Ixtiyoriy. Shaxsiy chatdagi boshqa tomonning ismi
         public string LastName { get; set; }  // Ixtiyoriy. Shaxsiy chatdagi boshqa tomonning familiyasi
 
-        public ICollection<ChatUser> Users { get; set; }  // Chat foydalanuvchilari
-        public ICollection<ChatInviteLink> InviteLinks { get; set; }  // Chat uchun taklif havolalari
+        public ICollection<ChatUserViewModel> Users { get; set; }  // Chat foydalanuvchilari
+        public ICollection<ChatInviteLinkViewModel> InviteLinks { get; set; }  // Chat uchun taklif havolalari
         public ChatPhoto Photo { get; set; }  // Chat rasmi
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Messenger.Infrastructure.Migrations
 {
     [DbContext(typeof(MessengerDbContext))]
-    partial class MessengerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241013001522_Chat-User-Admin")]
+    partial class ChatUserAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,8 +196,7 @@ namespace Messenger.Infrastructure.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("UserId", "ChatId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("ChatUsers");
                 });

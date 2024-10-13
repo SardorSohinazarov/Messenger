@@ -1,10 +1,13 @@
-﻿using Messenger.Application.DataTransferObjects;
+﻿using Messenger.Application.Common;
 using Messenger.Application.Helpers.PasswordHasher;
+using Messenger.Application.Helpers.UserContetx;
 using Messenger.Application.Services.Auth;
+using Messenger.Application.Services.Chats;
 using Messenger.Application.Services.Email;
 using Messenger.Application.Services.Token;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Messenger.Application
 {
@@ -13,21 +16,17 @@ namespace Messenger.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IChatService, ChatService>();
 
-            services.Configure<SmtpSettings>(options =>
-            {
-                options.Host = configuration["SmtpSettings:Host"];
-                options.Port = int.Parse(configuration["SmtpSettings:Port"]);
-                options.EnableSsl = bool.Parse(configuration["SmtpSettings:EnableSsl"]);
-                options.Username = configuration["SmtpSettings:Username"];
-                options.Password = configuration["SmtpSettings:Password"];
-            });
-
+            //helpers
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserContextService, UserContextService>();
+            services.AddAutoMapper(typeof(MappingProfiles));
 
             services.AddHttpContextAccessor();
+            services.AddHttpClient();
 
             return services;
         }

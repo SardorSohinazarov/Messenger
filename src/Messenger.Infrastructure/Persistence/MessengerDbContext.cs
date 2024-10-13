@@ -3,6 +3,7 @@ using Messenger.Domain.Entities;
 using Messenger.Domain.Common;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using System.Reflection;
 
 namespace Messenger.Infrastructure.Persistence
 {
@@ -29,6 +30,13 @@ namespace Messenger.Infrastructure.Persistence
             _httpContextAccessor = httpContextAccessor;
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var softDeleteEntries = ChangeTracker
@@ -45,12 +53,22 @@ namespace Messenger.Infrastructure.Persistence
                 .Entries<Auditable<long>>() // Todo faqat long uchun bo'p qoldi, shuni to'grilash kerak hammasi uchun qilib
                 .Where(x => x.State == EntityState.Added);
 
-            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
             foreach (var entry in newEntries)
             {
                 entry.Entity.CreatedAt = DateTime.UtcNow;
                 entry.Entity.CreatedBy = userId == null ? default : long.Parse(userId);
+            }
+
+            var updatedEntries = ChangeTracker
+                .Entries<Auditable<long>>() // Todo faqat long uchun bo'p qoldi, shuni to'grilash kerak hammasi uchun qilib
+                .Where(x => x.State == EntityState.Modified);
+
+            foreach (var entry in updatedEntries)
+            {
+                entry.Entity.LastModifiedAt = DateTime.UtcNow;
+                entry.Entity.LastModifiedBy = userId == null ? default : long.Parse(userId);
             }
 
             return base.SaveChangesAsync(cancellationToken);
