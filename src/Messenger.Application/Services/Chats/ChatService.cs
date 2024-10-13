@@ -46,7 +46,6 @@ namespace Messenger.Application.Services.Chats
             return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
         }
 
-
         public async Task<ChatViewModel> DeleteAsync(long id)
         {
             var chat = await _messengerDbContext.Chats.FirstOrDefaultAsync(x => x.Id == id);
@@ -114,36 +113,6 @@ namespace Messenger.Application.Services.Chats
             await _messengerDbContext.SaveChangesAsync();
 
             return _mapper.Map<ChatInviteLinkViewModel>(entryEntity.Entity);
-        }
-
-        public async Task<ChatDetailsViewModel> JoinChatAsync(string link)
-        {
-            var chatLink = await _messengerDbContext.ChatInviteLinks
-                .FirstOrDefaultAsync(x => x.InviteLink == link);
-
-            if (chatLink is null)
-                throw new ValidationException("Chat link topilmadi.");
-
-            if (chatLink.ExpireDate < DateTime.UtcNow)
-                throw new ValidationException("Link yaroqlilik muddati tugagan.");
-
-            var chat = await _messengerDbContext.Chats
-                .Include(x => x.Users)
-                .FirstOrDefaultAsync(x => x.Id == chatLink.ChatId);
-
-            if (chat is null)
-                throw new NotFoundException("Chat topilmadi.");
-
-            var userId = _userContextService.GetCurrentUserId();
-
-            chat.Users.Add(new ChatUser()
-            {
-                ChatId = chat.Id,
-                UserId = userId
-            });
-            await _messengerDbContext.SaveChangesAsync();
-
-            return _mapper.Map<ChatDetailsViewModel>(chat);
         }
     }
 }

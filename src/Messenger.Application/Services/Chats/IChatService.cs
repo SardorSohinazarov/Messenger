@@ -12,8 +12,5 @@ namespace Messenger.Application.Services.Chats
         Task<List<ChatViewModel>> GetChatsAsync(ChatFilter filter);
         Task<ChatDetailsViewModel> UpdateChatAsync(ChatModificationDto chatModificationDto);
         Task<ChatViewModel> DeleteAsync(long id);
-
-        Task<ChatInviteLinkViewModel> CreateChatInviteLinkAsync(long chatId);
-        Task<ChatDetailsViewModel> JoinChatAsync(string link);
     }
 }
