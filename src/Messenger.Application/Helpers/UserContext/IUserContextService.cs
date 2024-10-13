@@ -1,6 +1,6 @@
 ﻿using Messenger.Domain.Entities;
 
-namespace Messenger.Application.Helpers.UserContetx
+namespace Messenger.Application.Helpers.UserContext
 {
     public interface IUserContextService
     {

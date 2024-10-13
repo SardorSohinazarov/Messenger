@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Messenger.Application.DataTransferObjects.Chats;
 using Messenger.Application.DataTransferObjects.Filters;
-using Messenger.Application.Helpers.UserContetx;
+using Messenger.Application.Helpers.UserContext;
+using Messenger.Application.Validators.Chats;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace Messenger.Application.Services.Chats
 {
@@ -31,6 +34,11 @@ namespace Messenger.Application.Services.Chats
 
         public async Task<ChatDetailsViewModel> CreateChatAsync(ChatCreationDto chatCreationDto)
         {
+            var validator = new ChatCreationDtoValidator();
+            var validationResult = await validator.ValidateAsync(chatCreationDto);
+            if (!validationResult.IsValid)
+                throw new ValidationException("Model yaratish uchun yaroqsiz",validationResult.Errors);
+
             var chat = _mapper.Map<Chat>(chatCreationDto);
             chat.Users = new List<ChatUser>();
             chat.Users.Add(new ChatUser() // Bu xolda User o'zi yaratgan chatga admin bo'p qoladi
@@ -99,6 +107,11 @@ namespace Messenger.Application.Services.Chats
 
         public async Task<ChatDetailsViewModel> UpdateChatAsync(ChatModificationDto chatModificationDto)
         {
+            var validator = new ChatModificationDtoValidator();
+            var validationResult = await validator.ValidateAsync(chatModificationDto);
+            if (!validationResult.IsValid)
+                throw new ValidationException("Model o'zgatirish uchun yaroqsiz", validationResult.Errors);
+
             //adminmi
             var userId = _userContextService.GetCurrentUserId();
             var chatId = chatModificationDto.Id;

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Messenger.Application.DataTransferObjects.Chats;
 using Messenger.Application.DataTransferObjects.ChatUsers;
-using Messenger.Application.Helpers.UserContetx;
+using Messenger.Application.Helpers.UserContext;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;

@@ -1,4 +1,5 @@
-﻿using Messenger.Domain.Entities;
+﻿using Messenger.Application.Helpers.UserContext;
+using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;

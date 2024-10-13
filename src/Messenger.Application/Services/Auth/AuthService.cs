@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.Json;
 using Messenger.Application.DataTransferObjects.Auth.Google;
 using ValidationException = FluentValidation.ValidationException;
+using Messenger.Application.Validators.Auth;
 
 namespace Messenger.Application.Services.Auth
 {

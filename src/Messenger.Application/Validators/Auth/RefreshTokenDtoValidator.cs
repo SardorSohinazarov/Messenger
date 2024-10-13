@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Messenger.Application.DataTransferObjects.Auth;
 
-namespace Messenger.Application.Validators
+namespace Messenger.Application.Validators.Auth
 {
     public class RefreshTokenDtoValidator : AbstractValidator<RefreshTokenDto>
     {
