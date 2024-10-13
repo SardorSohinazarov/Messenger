@@ -1,4 +1,4 @@
-﻿using Messenger.Application.DataTransferObjects;
+﻿using Messenger.Application.DataTransferObjects.CommonOptions;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;

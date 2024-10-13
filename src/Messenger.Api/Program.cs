@@ -1,8 +1,8 @@
 using Messenger.Infrastructure;
 using Messenger.Application;
-using Messenger.Application.DataTransferObjects;
 using Messenger.Application.DataTransferObjects.Auth.Google;
 using Messenger.Api.Extensions;
+using Messenger.Application.DataTransferObjects.CommonOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
