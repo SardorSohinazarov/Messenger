@@ -54,11 +54,13 @@ namespace Messenger.Application.Services.ChatUsers
 
             if (chatUser == null) // yo'q bo'lsa yaratadi
             {
-                chat.Users.Add(new ChatUser()
+                chatUser = new ChatUser()
                 {
                     ChatId = chat.Id,
                     UserId = userId
-                });
+                };
+
+                chat.Users.Add(chatUser);
                 await _messengerDbContext.SaveChangesAsync();
             }
 

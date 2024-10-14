@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Messenger.Application.DataTransferObjects.Chats;
+using Messenger.Application.DataTransferObjects.Messages;
 using Messenger.Domain.Entities;
 
 namespace Messenger.Application.Common
@@ -17,6 +18,10 @@ namespace Messenger.Application.Common
             CreateMap<Chat, ChatDetailsViewModel>()
                 .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Users))
                 .ForMember(dest => dest.InviteLinks, opt => opt.MapFrom(src => src.InviteLinks));
+
+            CreateMap<MessageCreationDto, Message>();
+            CreateMap<MessageModificationDto, Message>();
+            CreateMap<Message, MessageViewModel>();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Messenger.Application.DataTransferObjects.Messages
         public long? SenderChatId { get; set; }               // Xabar yuborilgan chat ID
         public long ChatId { get; set; }                      // Xabar jo'natilgan chat ID
 
-        public string Text { get; set; }                      // Xabar matni
+        public string? Text { get; set; }                      // Xabar matni
         //public Animation Animation { get; set; }            // Xabar bilan birga kelgan animatsiya
         //public Audio Audio { get; set; }                    // Xabarga biriktirilgan audio
         //public Document Document { get; set; }              // Xabarga biriktirilgan hujjat
@@ -20,7 +20,7 @@ namespace Messenger.Application.DataTransferObjects.Messages
         //public Story Story { get; set; }                    // Xabarga biriktirilgan hikoya
         //public string Caption { get; set; }                 // Xabar bilan birga kelgan media fayl sarlavhasi
 
-        public string NewChatTitle { get; set; }              // Chatning yangi sarlavhasi
+        public string? NewChatTitle { get; set; }              // Chatning yangi sarlavhasi
         //public List<PhotoSize> NewChatPhoto { get; set; }   // Chatning yangi fotosi
         public bool? DeleteChatPhoto { get; set; }            // Chat fotosi o'chirilgan bo'lsa True
         public bool? GroupChatCreated { get; set; }           // Guruh chat yaratilgan bo'lsa True

@@ -34,6 +34,12 @@ namespace Messenger.Application.Services.Messages
             if (!validationResult.IsValid)
                 throw new ValidationException("Model yaratish uchun yaroqsiz", validationResult.Errors);
 
+            var chatUser = await _messengerDbContext.ChatUsers
+                .FirstOrDefaultAsync(x => x.ChatId == messageCreationDto.ChatId && x.UserId == messageCreationDto.FromId);
+
+            if (chatUser is null)
+                throw new NotFoundException("Chatga qo'shiling!");
+
             var message = _mapper.Map<Message>(messageCreationDto);
             var entityEntry = await _messengerDbContext.AddAsync(message);
             await _messengerDbContext.SaveChangesAsync();
@@ -54,6 +60,9 @@ namespace Messenger.Application.Services.Messages
 
             var chatUser = await _messengerDbContext.ChatUsers
                 .FirstOrDefaultAsync(x => x.ChatId == message.ChatId && x.UserId == userId);
+
+            if (chatUser is null)
+                throw new NotFoundException("Chatga qo'shiling!");
 
             if (chatUser.IsAdmin || message.FromId == userId)
             {
