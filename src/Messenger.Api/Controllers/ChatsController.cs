@@ -1,12 +1,14 @@
 ﻿using Messenger.Application.DataTransferObjects.Chats;
 using Messenger.Application.DataTransferObjects.Filters;
 using Messenger.Application.Services.Chats;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ChatsController : ControllerBase
     {
         private readonly IChatService _chatService;

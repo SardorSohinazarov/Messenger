@@ -1,12 +1,13 @@
 ﻿using Messenger.Application.DataTransferObjects.Messages;
 using Messenger.Application.Services.Messages;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MessagesController : ControllerBase
     {
         private readonly IMessagesService _messagesService;
@@ -22,7 +23,7 @@ namespace Messenger.Api.Controllers
             return Ok(messages);
         }
 
-        [HttpGet("{chatId}")]
+        [HttpGet("chat/{chatId}")]
         public async Task<IActionResult> GetMessagesAsync(long chatId)
         {
             var messages = await _messagesService.GetMessagesAsync(chatId);
