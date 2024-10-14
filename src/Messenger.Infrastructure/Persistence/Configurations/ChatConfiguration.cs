@@ -4,14 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Messenger.Infrastructure.Persistence.Configurations
 {
-    public class MessageConfiguration : IEntityTypeConfiguration<Message>
+    public class ChatConfiguration : IEntityTypeConfiguration<Chat>
     {
-        public void Configure(EntityTypeBuilder<Message> builder)
+        public void Configure(EntityTypeBuilder<Chat> builder)
         {
-            builder.HasOne(x => x.Chat)
-                .WithMany(x => x.Messages)
-                .HasForeignKey(x => x.ChatId);
-
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
