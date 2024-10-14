@@ -5,6 +5,7 @@ using Messenger.Application.DataTransferObjects.Filters;
 using Messenger.Application.Helpers.UserContext;
 using Messenger.Application.Validators.Chats;
 using Messenger.Domain.Entities;
+using Messenger.Domain.Enums;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
@@ -103,6 +104,36 @@ namespace Messenger.Application.Services.Chats
                 .ToListAsync();
 
             return chats.Select(x => _mapper.Map<ChatViewModel>(x)).ToList();
+        }
+
+        public async Task<ChatDetailsViewModel> GetOrCreatePrivateChat(long userId)
+        {
+            var currentUserId = _userContextService.GetCurrentUserId();
+
+            var existingChat = await _messengerDbContext.Chats
+                .Include(c => c.Users)
+                .FirstOrDefaultAsync(c => c.Type == EChatType.Private 
+                                       && c.Users.Any(u => u.UserId == currentUserId)
+                                       && c.Users.Any(u => u.UserId == userId));
+
+            if (existingChat is not null)
+                return _mapper.Map<ChatDetailsViewModel>(existingChat);
+
+            // Yangi chat yaratamiz
+            var newChat = new Chat
+            {
+                Type = EChatType.Private,
+                Users = new List<ChatUser>
+                {
+                    new ChatUser { UserId = currentUserId },
+                    new ChatUser { UserId = userId }
+                },
+            };
+
+            var entryEntity = await _messengerDbContext.AddAsync(newChat);
+            await _messengerDbContext.SaveChangesAsync();
+
+            return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
         }
 
         public async Task<ChatDetailsViewModel> UpdateChatAsync(ChatModificationDto chatModificationDto)

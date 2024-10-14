@@ -7,6 +7,7 @@ namespace Messenger.Application.Services.Chats
     public interface IChatService
     {
         Task<ChatDetailsViewModel> CreateChatAsync(ChatCreationDto chatCreationDto);
+        Task<ChatDetailsViewModel> GetOrCreatePrivateChat(long userId);
         Task<List<Chat>> GetChatsAsync();
         Task<ChatDetailsViewModel> GetChatAsync(long id);
         Task<List<ChatViewModel>> GetChatsAsync(ChatFilter filter);
