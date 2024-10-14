@@ -11,7 +11,8 @@ namespace Messenger.Application.Validators.Chats
                 .IsInEnum().WithMessage("Chat turi 'private', 'group', 'supergroup' yoki 'channel' bo'lishi kerak.");
 
             RuleFor(chat => chat.Title)
-                .MaximumLength(100).When(x => x.Title is not null).WithMessage("Sarlavha 100 ta belgidan oshmasligi kerak."); // Maksimal uzunlik
+                .NotEmpty().WithMessage("Sarlavha bo'sh bo'lmasligi kerak.")
+                .MaximumLength(100).WithMessage("Sarlavha 100 ta belgidan oshmasligi kerak."); // Maksimal uzunlik
         }
     }
 }
