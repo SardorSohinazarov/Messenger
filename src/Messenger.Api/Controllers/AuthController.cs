@@ -1,6 +1,7 @@
 ﻿using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Application.DataTransferObjects.Auth.Google;
 using Messenger.Application.Services.Auth;
+using Messenger.Application.Services.Auth.Google;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.Api.Controllers
@@ -10,9 +11,13 @@ namespace Messenger.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IGoogleAuthService _googleAuthService;
 
-        public AuthController(IAuthService authService) 
-            => _authService = authService;
+        public AuthController(IAuthService authService, IGoogleAuthService googleAuthService)
+        {
+            _authService = authService;
+            _googleAuthService = googleAuthService;
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto registerDto)
@@ -49,7 +54,7 @@ namespace Messenger.Api.Controllers
         [HttpPost("google-login")]
         public async Task<IActionResult> LoginWithGoogleAccountAsync(GoogleLoginDto googleLoginDto)
         {
-            var token = await _authService.LoginWithGoogleAccountAsync(googleLoginDto);
+            var token = await _googleAuthService.SignAsync(googleLoginDto);
 
             return Ok(token);
         }

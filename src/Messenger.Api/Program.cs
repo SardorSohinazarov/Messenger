@@ -16,9 +16,8 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
-var googleSettings = builder.Configuration.GetSection("GoogleOAuthOptions").Get<GoogleOAuthOptions>();
 
-builder.Services.AddAuthentication(jwtSettings, googleSettings);
+builder.Services.AddAuthentication(jwtSettings);
 
 builder.Services.AddCors(options =>
 {

@@ -44,7 +44,7 @@ namespace Messenger.Api.Extensions
             return services;
         }
 
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, JwtSettings jwtSettings, GoogleOAuthOptions googleOAuthOptions)
+        public static IServiceCollection AddAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
         {
             services.AddAuthentication(options =>
             {
@@ -63,12 +63,6 @@ namespace Messenger.Api.Extensions
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
                 };
-            })
-            .AddGoogle(googleOptions =>
-            {
-                googleOptions.ClientId = googleOAuthOptions.ClientId;
-                googleOptions.ClientSecret = googleOAuthOptions.ClientSecret;
-                googleOptions.CallbackPath = new PathString("/google-login");
             });
 
             return services;

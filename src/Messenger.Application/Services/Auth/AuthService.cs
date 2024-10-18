@@ -2,19 +2,16 @@
 using Messenger.Application.Helpers.PasswordHasher;
 using Messenger.Application.Services.Email;
 using Messenger.Application.Services.Token;
-using Messenger.Application.Validators;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
-using Messenger.Application.DataTransferObjects.Auth.Google;
 using ValidationException = FluentValidation.ValidationException;
 using Messenger.Application.Validators.Auth;
+using Messenger.Domain.Enums;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -55,7 +52,7 @@ namespace Messenger.Application.Services.Auth
             var user = await _messengerDbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == emailConfirmationDto.Email);
 
-            if(user.IsEmailConfirmed)
+            if(!user.IsEmailConfirmed.HasValue || user.IsEmailConfirmed.Value)
                 throw new Exception("Email allaqachon tasdiqlangan, Login qiling!");
 
             if (user is null)
@@ -84,8 +81,8 @@ namespace Messenger.Application.Services.Auth
             if (user is null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
-            if(!user.IsEmailConfirmed)
-                throw new Exception("Email tasdiqlanmagan.");
+            if(!(user.LoginProvider == ELoginProvider.Email && user.IsEmailConfirmed.Value))
+                throw new ForbiddenException("Email tasdiqlanmagan.");
 
             // Parolni tekshirish
             if (!_passwordHasher.Verify(user.PasswordHash, loginDto.Password, user.Salt))
@@ -96,52 +93,6 @@ namespace Messenger.Application.Services.Auth
             await _messengerDbContext.SaveChangesAsync();
 
             return await _tokenService.GenerateTokenAsync(user);
-        }
-
-        public async Task<TokenDto> LoginWithGoogleAccountAsync(GoogleLoginDto googleLoginDto)
-        {
-            var userInfo = await GetGoogleUserInfoAsync(googleLoginDto.IdToken);
-
-            var user = await _messengerDbContext.Users.FirstOrDefaultAsync(x => x.Email == userInfo.Email);
-
-            //Todo userInfo.Picture ni ham saqlab olish kerak
-
-            if (user == null)
-            {
-                var salt = Guid.NewGuid().ToString();
-                var passwordHash = _passwordHasher.Encrypt(salt, salt);
-                var refreshToken = Guid.NewGuid().ToString();
-
-                user = new User
-                {
-                    Email = userInfo.Email,
-                    FirstName = userInfo.Name,
-                    RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30),
-                    ConfirmationCode = null,
-                    IsEmailConfirmed = true,
-                    RefreshToken = refreshToken,
-                    Salt = salt,
-                    PasswordHash = passwordHash,
-                    UserName = userInfo.Email.Split('@')[0]
-                };
-
-                await _messengerDbContext.Users.AddAsync(user);
-                await _messengerDbContext.SaveChangesAsync();
-            }
-
-            return await _tokenService.GenerateTokenAsync(user);
-        }
-
-        private async Task<GoogleUserInfo> GetGoogleUserInfoAsync(string accessToken)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://www.googleapis.com/oauth2/v2/userinfo");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-            var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<GoogleUserInfo>(jsonResponse);
         }
 
         public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
@@ -186,6 +137,7 @@ namespace Messenger.Application.Services.Auth
                 PasswordHash = passwordHash,
                 RefreshToken = refreshToken,
                 RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30),
+                LoginProvider = Domain.Enums.ELoginProvider.Email
             };
 
             await _messengerDbContext.Users.AddAsync(user);
