@@ -1,4 +1,5 @@
-﻿using Messenger.Domain.Entities;
+﻿using Messenger.Application.DataTransferObjects.Messages;
+using Messenger.Domain.Entities;
 using Messenger.Domain.Enums;
 
 namespace Messenger.Application.DataTransferObjects.Chats
@@ -12,5 +13,6 @@ namespace Messenger.Application.DataTransferObjects.Chats
         public string FirstName { get; set; }  // Ixtiyoriy. Shaxsiy chatdagi boshqa tomonning ismi
         public string LastName { get; set; }  // Ixtiyoriy. Shaxsiy chatdagi boshqa tomonning familiyasi
         public ChatPhoto Photo { get; set; }  // Chat rasmi
+        public MessageViewModel LastMessage { get; set; } // Chatga jo'natilgan messagelar oxirgisi
     }
 }

@@ -33,7 +33,7 @@ namespace Messenger.Application.Validators.Messages
 
             // NewChatMemberId uchun validatsiya (null bo'lishi mumkin)
             RuleFor(message => message.NewChatMemberId)
-                .GreaterThan(0).When(message => message.NewChatMemberId is not null)
+                .GreaterThan(0).When(message => message.NewChatMemberId.HasValue)
                 .WithMessage("New chat member ID 0 dan katta bo'lishi kerak."); // Faqat ID mavjud bo'lsa tekshiriladi.
         }
     }
