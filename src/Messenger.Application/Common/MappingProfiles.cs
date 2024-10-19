@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
 using Messenger.Application.DataTransferObjects.Chats;
 using Messenger.Application.DataTransferObjects.Messages;
 using Messenger.Domain.Entities;
@@ -22,6 +23,8 @@ namespace Messenger.Application.Common
             CreateMap<MessageCreationDto, Message>();
             CreateMap<MessageModificationDto, Message>();
             CreateMap<Message, MessageViewModel>();
+
+            CreateMap<User, UserProfile>();
         }
     }
 }

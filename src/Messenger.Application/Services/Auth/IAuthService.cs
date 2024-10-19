@@ -1,5 +1,5 @@
 ﻿using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.DataTransferObjects.Auth.Google;
+using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -14,7 +14,8 @@ namespace Messenger.Application.Services.Auth
 
         Task RegisterAsync(RegisterDto registerDto);
         Task<TokenDto> ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto);
-
         Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
+        Task<UserProfile> GetUserProfileAsync(string username);
+        Task<UserProfile> GetUserProfileAsync(long userId);
     }
 }

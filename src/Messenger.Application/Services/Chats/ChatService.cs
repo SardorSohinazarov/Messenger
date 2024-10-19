@@ -77,6 +77,22 @@ namespace Messenger.Application.Services.Chats
             return _mapper.Map<ChatViewModel>(chat);
         }
 
+        public async Task<List<ChatViewModel>> GetAdminChatsAsync()
+        {
+            var userId = _userContextService.GetCurrentUserId();
+
+            var adminChats = await _messengerDbContext.ChatUsers
+                .Where(x => x.UserId == userId && x.IsAdmin)
+                .Select(x => x.ChatId)
+                .ToListAsync();
+
+            var ownerChats = await _messengerDbContext.Chats
+                .Where(x => adminChats.Contains(x.Id))
+                .ToListAsync();
+
+            return _mapper.Map<List<ChatViewModel>>(ownerChats);
+        }
+
         public async Task<ChatDetailsViewModel> GetChatAsync(long id)
         {
             var chat = await _messengerDbContext.Chats
@@ -147,6 +163,17 @@ namespace Messenger.Application.Services.Chats
             await _messengerDbContext.SaveChangesAsync();
 
             return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
+        }
+
+        public async Task<List<ChatViewModel>> GetOwnerChatsAsync()
+        {
+            var userId = _userContextService.GetCurrentUserId();
+
+            var ownerChats = await _messengerDbContext.Chats
+                .Where(x => x.CreatedBy == userId)
+                .ToListAsync();
+
+            return _mapper.Map<List<ChatViewModel>>(ownerChats);
         }
 
         public async Task<ChatDetailsViewModel> UpdateChatAsync(ChatModificationDto chatModificationDto)

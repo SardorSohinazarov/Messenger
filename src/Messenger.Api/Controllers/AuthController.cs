@@ -58,5 +58,13 @@ namespace Messenger.Api.Controllers
 
             return Ok(token);
         }
+
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUserProfileAsync(string username)
+        {
+            var profile = await _authService.GetUserProfileAsync(username);
+
+            return Ok(profile);
+        }
     }
 }

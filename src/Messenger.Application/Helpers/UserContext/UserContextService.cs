@@ -1,12 +1,11 @@
-﻿using Messenger.Application.Helpers.UserContext;
-using Messenger.Domain.Entities;
+﻿using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace Messenger.Application.Helpers.UserContetx
+namespace Messenger.Application.Helpers.UserContext
 {
     public class UserContextService : IUserContextService
     {

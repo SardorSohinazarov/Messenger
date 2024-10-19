@@ -64,7 +64,8 @@ namespace Messenger.Application.Services.Auth.Google
             var salt = Guid.NewGuid().ToString();
             var passwordHash = _passwordHasher.Encrypt(salt, salt);
             var refreshToken = Guid.NewGuid().ToString();
-
+            var userName = payload.Email.Substring(payload.Email.Length - 10); // Username uchun emaildan qirqib olamiz
+                                                                               // ( email: sardorstudent0618@gmail.com -> username: sardorstudent0618)
             var user = new User()
             {
                 FirstName = payload.GivenName,

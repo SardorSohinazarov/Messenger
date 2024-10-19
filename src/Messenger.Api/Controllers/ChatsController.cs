@@ -3,6 +3,7 @@ using Messenger.Application.DataTransferObjects.Filters;
 using Messenger.Application.Services.Chats;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.AccessControl;
 
 namespace Messenger.Api.Controllers
 {
@@ -36,6 +37,22 @@ namespace Messenger.Api.Controllers
         public async Task<IActionResult> GetChatsAsync(ChatFilter chatFilter)
         {
             var chats = await _chatService.GetChatsAsync(chatFilter);
+
+            return Ok(chats);
+        }
+
+        [HttpGet("admin")]
+        public async Task<IActionResult> GetAdminChatsAsync()
+        {
+            var chats = await _chatService.GetAdminChatsAsync();
+
+            return Ok(chats);
+        }
+
+        [HttpGet("owner")]
+        public async Task<IActionResult> GetOwnerChatsAsync()
+        {
+            var chats = _chatService.GetOwnerChatsAsync();
 
             return Ok(chats);
         }

@@ -12,6 +12,9 @@ using System.Text;
 using ValidationException = FluentValidation.ValidationException;
 using Messenger.Application.Validators.Auth;
 using Messenger.Domain.Enums;
+using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
+using AutoMapper;
+using Messenger.Application.Helpers.UserContext;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -22,6 +25,8 @@ namespace Messenger.Application.Services.Auth
         private readonly IEmailService _emailService;
         private readonly ITokenService _tokenService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserContextService _userContextService;
+        private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
 
         public AuthService(
@@ -30,7 +35,9 @@ namespace Messenger.Application.Services.Auth
             IEmailService emailService,
             ITokenService tokenService,
             IHttpContextAccessor httpContextAccessor,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            IUserContextService userContextService,
+            IMapper mapper)
         {
             _messengerDbContext = messengerDbContext;
             _passwordHasher = passwordHasher;
@@ -38,6 +45,8 @@ namespace Messenger.Application.Services.Auth
             _tokenService = tokenService;
             _httpContextAccessor = httpContextAccessor;
             _httpClient = httpClient;
+            _userContextService = userContextService;
+            _mapper = mapper;
         }
 
         //Todo Email tasdiqlashda code malum vaqt ichida kiritilishi kerak (masalan: 3:00)
@@ -65,6 +74,23 @@ namespace Messenger.Application.Services.Auth
             await _messengerDbContext.SaveChangesAsync();
 
             return await _tokenService.GenerateTokenAsync(user);
+        }
+
+        public async Task<UserProfile> GetUserProfileAsync(string username)
+        {
+            var userId = _userContextService.GetCurrentUserId();
+
+            var user = await _messengerDbContext.Users
+                .FirstOrDefaultAsync(x => x.Id == userId 
+                                       //&& username == x.UserName
+                                       );
+
+            return _mapper.Map<UserProfile>(user);
+        }
+
+        public Task<UserProfile> GetUserProfileAsync(long userId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<TokenDto> LoginAsync(LoginDto loginDto)
@@ -124,7 +150,8 @@ namespace Messenger.Application.Services.Auth
             var salt = Guid.NewGuid().ToString();
             var passwordHash = _passwordHasher.Encrypt(registerDto.Password, salt);
             var refreshToken = Guid.NewGuid().ToString();
-
+            var userName = registerDto.Email.Substring(0, registerDto.Email.Length - 10); // Username uchun emaildan qirqib olamiz
+                                                                                          // ( email: sardorstudent0618@gmail.com -> username: sardorstudent0618)
             var user = new User
             {
                 FirstName = registerDto.FirstName,
