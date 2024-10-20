@@ -15,6 +15,7 @@ namespace Messenger.Domain.Entities
         public ICollection<ChatInviteLink> InviteLinks { get; set; }  // Chat uchun taklif havolalari
         public ICollection<Message> Messages { get; set; } // Chatga jo'natilgan messagelar
         public ChatPhoto Photo { get; set; }  // Chat rasmi
+
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -35,6 +36,7 @@ namespace Messenger.Domain.Entities
         public string Description { get; set; } // Guruh, supergroup va kanal chatlari uchun tavsif.
         public string InviteLink { get; set; } // Guruh, supergroup va kanal chatlari uchun asosiy taklif havolasi.
         public long? LinkedChatId { get; set; } // Bog'langan chat uchun unikal identifikator.
+
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -51,6 +53,7 @@ namespace Messenger.Domain.Entities
 
         public long ChatId { get; set; }  // Chat ID
         public Chat Chat { get; set; }  // Chat entity bilan bog'lanish
+
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -65,6 +68,7 @@ namespace Messenger.Domain.Entities
 
         public long ChatId { get; set; }  // Chat ID
         public Chat Chat { get; set; }  // Chat entity bilan bog'lanish
+
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

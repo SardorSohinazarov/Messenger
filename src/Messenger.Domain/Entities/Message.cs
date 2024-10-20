@@ -32,6 +32,7 @@ namespace Messenger.Domain.Entities
         public bool? ChannelChatCreated { get; set; }         // Kanal chat yaratilgan bo'lsa True
         public long? NewChatMemberId { get; set; }           // Yangi chat a'zosi ID
         public User NewChatMember { get; set; }               // Yangi chat a'zosi
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -46,6 +47,7 @@ namespace Messenger.Domain.Entities
         public int Width { get; set; }  // Fotosuratning kengligi
         public int Height { get; set; }  // Fotosuratning balandligi
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda
+
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -64,6 +66,7 @@ namespace Messenger.Domain.Entities
         public string FileName { get; set; }  // Animatsiyaning asl fayl nomi, jo'natuvchi tomonidan belgilangan
         public string MimeType { get; set; }  // Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin.
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -82,6 +85,7 @@ namespace Messenger.Domain.Entities
         public string MimeType { get; set; }  // (Ixtiyoriy) Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin.
         public PhotoSize Thumbnail { get; set; }  // (Ixtiyoriy) Muzik faylning albom qopqog'ining mini rasmi
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -97,6 +101,7 @@ namespace Messenger.Domain.Entities
         public string FileName { get; set; }  // (Ixtiyoriy) Asl fayl nomi, jo'natuvchi tomonidan belgilangan
         public string MimeType { get; set; }  // (Ixtiyoriy) Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin.
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -108,6 +113,7 @@ namespace Messenger.Domain.Entities
     {
         public Chat Chat { get; set; }  // Hikoyani joylashtirgan chat
         public int Id { get; set; }  // Chatdagi hikoyaning noyub identifikatori
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -126,6 +132,7 @@ namespace Messenger.Domain.Entities
         public string FileName { get; set; }  // (Ixtiyoriy) Asl fayl nomi, jo'natuvchi tomonidan belgilangan
         public string MimeType { get; set; }  // (Ixtiyoriy) Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin.
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -140,6 +147,7 @@ namespace Messenger.Domain.Entities
         public int Duration { get; set; }  // Audio davomiyligi, soniyalarda, jo'natuvchi tomonidan belgilangan
         public string MimeType { get; set; }  // (Ixtiyoriy) Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin. Lekin bu 52 ta muhim bitlardan ortiq bo'lmasligi kerak, shuning uchun signed 64-bit integer yoki double-precision float turi bu qiymatni saqlash uchun xavfsizdir.
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -154,6 +162,7 @@ namespace Messenger.Domain.Entities
         public string LastName { get; set; }  // (Ixtiyoriy) Kontaktning familiyasi
         public int? UserId { get; set; }  // (Ixtiyoriy) Kontaktning Telegramdagi foydalanuvchi identifikatori. Bu raqam 32 ta muhim bitlardan ko'proq bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin. Lekin bu 52 ta muhim bitlardan ortiq bo'lmasligi kerak, shuning uchun 64-bit integer yoki double-precision float turi bu identifikatorni saqlash uchun xavfsizdir.
         public string Vcard { get; set; }  // (Ixtiyoriy) Kontakt haqida qo'shimcha ma'lumot, vCard shaklida
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -169,6 +178,7 @@ namespace Messenger.Domain.Entities
         public int? LivePeriod { get; set; }  // (Ixtiyoriy) Xabar yuborish sanasiga nisbatan joylashuvni yangilash vaqti; soniyalarda. Faqat faol jonli joylashuvlar uchun.
         public int? Heading { get; set; }  // (Ixtiyoriy) Foydalanuvchi harakatlanayotgan yo'nalish, darajalarda; 1-360. Faqat faol jonli joylashuvlar uchun.
         public int? ProximityAlertRadius { get; set; }  // (Ixtiyoriy) Boshqa chat a'zosiga yaqinlashish haqida ogohlantirishlar uchun maksimal masofa, metrda. Faqat jo'natilgan jonli joylashuvlar uchun.
+        
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

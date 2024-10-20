@@ -23,6 +23,7 @@ namespace Messenger.Domain.Entities
         public ELoginProvider LoginProvider { get; set; }  // Foydalanuvchi qanday tizimdan kirganini bildiradi
 
         public ICollection<ChatUser> Chats { get; set; }  // Foydalanuvchi chatlari
+
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
