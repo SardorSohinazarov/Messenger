@@ -54,25 +54,25 @@ namespace Messenger.Infrastructure.Persistence
             }
 
             var newEntries = ChangeTracker
-                .Entries<Auditable<long>>() // Todo faqat long uchun bo'p qoldi, shuni to'grilash kerak hammasi uchun qilib
+                .Entries<IAuditable>()
                 .Where(x => x.State == EntityState.Added);
 
             var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+
             foreach (var entry in newEntries)
             {
-                entry.Entity.CreatedAt = DateTime.UtcNow;
-                entry.Entity.CreatedBy = userId == null ? default : long.Parse(userId);
+                entry.Property(nameof(IAuditable.CreatedBy)).CurrentValue = long.Parse(userId);
+                entry.Property(nameof(IAuditable.CreatedAt)).CurrentValue = DateTime.UtcNow;
             }
 
             var updatedEntries = ChangeTracker
-                .Entries<Auditable<long>>() // Todo faqat long uchun bo'p qoldi, shuni to'grilash kerak hammasi uchun qilib
+                .Entries<IAuditable>()
                 .Where(x => x.State == EntityState.Modified);
 
             foreach (var entry in updatedEntries)
             {
-                entry.Entity.LastModifiedAt = DateTime.UtcNow;
-                entry.Entity.LastModifiedBy = userId == null ? default : long.Parse(userId);
+                entry.Property(nameof(IAuditable.LastModifiedBy)).CurrentValue = long.Parse(userId);
+                entry.Property(nameof(IAuditable.LastModifiedAt)).CurrentValue = DateTime.UtcNow;
             }
 
             return base.SaveChangesAsync(cancellationToken);

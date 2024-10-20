@@ -2,7 +2,7 @@
 
 namespace Messenger.Domain.Entities
 {
-    public class Message : Auditable<Guid>, ISoftDeletable
+    public class Message : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public long? FromId { get; set; }                     // Xabarni yuborgan foydalanuvchi ID
         public User From { get; set; }                        // Xabarni yuborgan foydalanuvchi
@@ -33,9 +33,13 @@ namespace Messenger.Domain.Entities
         public long? NewChatMemberId { get; set; }           // Yangi chat a'zosi ID
         public User NewChatMember { get; set; }               // Yangi chat a'zosi
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class PhotoSize : Auditable<Guid>, ISoftDeletable
+    public class PhotoSize : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public string FileId { get; set; }  // Fayl uchun identifikator, uni yuklab olish yoki qayta ishlatish uchun ishlatilishi mumkin
         public string FileUniqueId { get; set; }  // Fayl uchun noyob identifikator, vaqt o‘tishi bilan va turli botlar uchun bir xil bo‘lishi kerak. Faylni yuklab olish yoki qayta ishlatish uchun ishlatilmaydi.
@@ -43,9 +47,13 @@ namespace Messenger.Domain.Entities
         public int Height { get; set; }  // Fotosuratning balandligi
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class Animation : Auditable<Guid>, ISoftDeletable
+    public class Animation : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public string FileId { get; set; }  // Fayl uchun identifikator, uni yuklab olish yoki qayta ishlatish uchun ishlatilishi mumkin
         public string FileUniqueId { get; set; }  // Fayl uchun noyob identifikator, vaqt o‘tishi bilan va turli botlar uchun bir xil bo‘lishi kerak. Faylni yuklab olish yoki qayta ishlatish uchun ishlatilmaydi.
@@ -57,9 +65,13 @@ namespace Messenger.Domain.Entities
         public string MimeType { get; set; }  // Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin.
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class Audio : Auditable<Guid>, ISoftDeletable
+    public class Audio : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public string FileId { get; set; }  // Fayl uchun identifikator, uni yuklab olish yoki qayta ishlatish uchun ishlatilishi mumkin
         public string FileUniqueId { get; set; }  // Fayl uchun noyob identifikator, vaqt o‘tishi bilan va turli botlar uchun bir xil bo‘lishi kerak. Faylni yuklab olish yoki qayta ishlatish uchun ishlatilmaydi.
@@ -71,9 +83,13 @@ namespace Messenger.Domain.Entities
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin.
         public PhotoSize Thumbnail { get; set; }  // (Ixtiyoriy) Muzik faylning albom qopqog'ining mini rasmi
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class Document : Auditable<Guid>, ISoftDeletable
+    public class Document : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public string FileId { get; set; }  // Fayl uchun identifikator, uni yuklab olish yoki qayta ishlatish uchun ishlatilishi mumkin
         public string FileUniqueId { get; set; }  // Fayl uchun noyob identifikator, vaqt o‘tishi bilan va turli botlar uchun bir xil bo‘lishi kerak. Faylni yuklab olish yoki qayta ishlatish uchun ishlatilmaydi.
@@ -82,16 +98,24 @@ namespace Messenger.Domain.Entities
         public string MimeType { get; set; }  // (Ixtiyoriy) Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin.
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class Story : Auditable<Guid>, ISoftDeletable
+    public class Story : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public Chat Chat { get; set; }  // Hikoyani joylashtirgan chat
         public int Id { get; set; }  // Chatdagi hikoyaning noyub identifikatori
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class Video : Auditable<Guid>, ISoftDeletable
+    public class Video : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public string FileId { get; set; }  // Fayl uchun identifikator, uni yuklab olish yoki qayta ishlatish uchun ishlatilishi mumkin
         public string FileUniqueId { get; set; }  // Fayl uchun noyub identifikator, vaqt o‘tishi bilan va turli botlar uchun bir xil bo‘lishi kerak. Faylni yuklab olish yoki qayta ishlatish uchun ishlatilmaydi.
@@ -103,9 +127,13 @@ namespace Messenger.Domain.Entities
         public string MimeType { get; set; }  // (Ixtiyoriy) Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin.
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class Voice : Auditable<Guid>, ISoftDeletable
+    public class Voice : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public string FileId { get; set; }  // Fayl uchun identifikator, uni yuklab olish yoki qayta ishlatish uchun ishlatilishi mumkin
         public string FileUniqueId { get; set; }  // Fayl uchun noyob identifikator, vaqt o‘tishi bilan va turli botlar uchun bir xil bo‘lishi kerak. Faylni yuklab olish yoki qayta ishlatish uchun ishlatilmaydi.
@@ -113,9 +141,13 @@ namespace Messenger.Domain.Entities
         public string MimeType { get; set; }  // (Ixtiyoriy) Faylning MIME turi, jo'natuvchi tomonidan belgilangan
         public int? FileSize { get; set; }  // (Ixtiyoriy) Fayl o'lchami baytlarda. 2^31 dan katta bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin. Lekin bu 52 ta muhim bitlardan ortiq bo'lmasligi kerak, shuning uchun signed 64-bit integer yoki double-precision float turi bu qiymatni saqlash uchun xavfsizdir.
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class Contact : Auditable<Guid>, ISoftDeletable
+    public class Contact : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public string PhoneNumber { get; set; }  // Kontaktning telefon raqami
         public string FirstName { get; set; }  // Kontaktning ism
@@ -123,9 +155,13 @@ namespace Messenger.Domain.Entities
         public int? UserId { get; set; }  // (Ixtiyoriy) Kontaktning Telegramdagi foydalanuvchi identifikatori. Bu raqam 32 ta muhim bitlardan ko'proq bo'lishi mumkin va ba'zi dasturlash tillari uni talqin qilishda qiyinchiliklarga duch kelishi mumkin. Lekin bu 52 ta muhim bitlardan ortiq bo'lmasligi kerak, shuning uchun 64-bit integer yoki double-precision float turi bu identifikatorni saqlash uchun xavfsizdir.
         public string Vcard { get; set; }  // (Ixtiyoriy) Kontakt haqida qo'shimcha ma'lumot, vCard shaklida
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
-    public class Location : Auditable<Guid>, ISoftDeletable
+    public class Location : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public float Latitude { get; set; }  // Jo'natuvchi tomonidan belgilangan kenglik
         public float Longitude { get; set; }  // Jo'natuvchi tomonidan belgilangan uzunlik
@@ -134,5 +170,9 @@ namespace Messenger.Domain.Entities
         public int? Heading { get; set; }  // (Ixtiyoriy) Foydalanuvchi harakatlanayotgan yo'nalish, darajalarda; 1-360. Faqat faol jonli joylashuvlar uchun.
         public int? ProximityAlertRadius { get; set; }  // (Ixtiyoriy) Boshqa chat a'zosiga yaqinlashish haqida ogohlantirishlar uchun maksimal masofa, metrda. Faqat jo'natilgan jonli joylashuvlar uchun.
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 }

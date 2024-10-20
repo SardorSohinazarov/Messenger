@@ -1,6 +1,6 @@
 ﻿namespace Messenger.Domain.Common
 {
-    public abstract class Auditable<TId> : BaseEntity<TId>
+    public interface IAuditable
     {
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

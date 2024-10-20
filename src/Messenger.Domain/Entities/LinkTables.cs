@@ -2,7 +2,7 @@
 
 namespace Messenger.Domain.Entities
 {
-    public class ChatUser : Auditable<Guid>, ISoftDeletable
+    public class ChatUser : BaseEntity<Guid>, IAuditable, ISoftDeletable
     {
         public long UserId { get; set; }
         public long ChatId { get; set; }
@@ -13,5 +13,9 @@ namespace Messenger.Domain.Entities
 
         public User User { get; set; }
         public Chat Chat { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 }

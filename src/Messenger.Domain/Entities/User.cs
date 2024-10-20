@@ -3,7 +3,7 @@ using Messenger.Domain.Enums;
 
 namespace Messenger.Domain.Entities
 {
-    public class User : Auditable<long>, ISoftDeletable
+    public class User : BaseEntity<long>, IAuditable, ISoftDeletable
     {
         public string FirstName { get; set; }  // Foydalanuvchi ismi
         public string? LastName { get; set; }  // Ixtiyoriy. Foydalanuvchi familiyasi
@@ -24,6 +24,10 @@ namespace Messenger.Domain.Entities
 
         public ICollection<ChatUser> Chats { get; set; }  // Foydalanuvchi chatlari
         public bool IsDeleted { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long LastModifiedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
     }
 
     public class UserProfilePhotos
