@@ -1,6 +1,7 @@
-﻿using Messenger.Domain.Entities;
+﻿using Messenger.Application.DataTransferObjects.Chats;
+using Messenger.Domain.Entities;
 
-namespace Messenger.Application.DataTransferObjects.Chats
+namespace Messenger.Application.DataTransferObjects.ChatUsers
 {
     public class ChatUserViewModel
     {

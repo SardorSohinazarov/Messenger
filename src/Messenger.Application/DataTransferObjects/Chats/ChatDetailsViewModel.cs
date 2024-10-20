@@ -1,4 +1,5 @@
-﻿using Messenger.Domain.Entities;
+﻿using Messenger.Application.DataTransferObjects.ChatUsers;
+using Messenger.Domain.Entities;
 using Messenger.Domain.Enums;
 
 namespace Messenger.Application.DataTransferObjects.Chats

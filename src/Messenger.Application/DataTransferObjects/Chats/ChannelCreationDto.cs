@@ -1,7 +1,4 @@
-﻿using Messenger.Domain.Entities;
-using Messenger.Domain.Enums;
-
-namespace Messenger.Application.DataTransferObjects.Chats
+﻿namespace Messenger.Application.DataTransferObjects.Chats
 {
     public class ChannelCreationDto
     {
