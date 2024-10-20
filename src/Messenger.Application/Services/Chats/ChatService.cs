@@ -34,6 +34,25 @@ namespace Messenger.Application.Services.Chats
             _userContextService = userContextService;
         }
 
+        public async Task<ChatDetailsViewModel> CreateChannelAsync(ChannelCreationDto channelCreationDto)
+        {
+            //validatsiya
+            var chat = _mapper.Map<Chat>(channelCreationDto);
+            chat.Type = EChatType.Channel;
+
+            return await CreateChatAsync(chat);
+        }
+
+        public async Task<ChatDetailsViewModel> CreateGroupAsync(GroupCreationDto groupCreationDto)
+        {
+            //validatsiya
+            var chat = _mapper.Map<Chat>(groupCreationDto);
+            chat.Type = EChatType.Group;
+
+            return await CreateChatAsync(chat);
+        }
+
+        // keraksiz
         public async Task<ChatDetailsViewModel> CreateChatAsync(ChatCreationDto chatCreationDto)
         {
             var validator = new ChatCreationDtoValidator();
@@ -117,12 +136,12 @@ namespace Messenger.Application.Services.Chats
                 .Include(x => x.Users)
                 .Include(x => x.Messages)
                 .Where(x => x.Users.Select(x => x.UserId).Contains(userId))
-                .Where(x => filter.UserName == null || x.Username == filter.UserName)
+                .Where(x => filter.UserName == null || x.UserName == filter.UserName)
                 .Where(x => filter.ChatType == null || x.Type == filter.ChatType)
                 .Select(x => new ChatViewModel()
                 {
                     Id = x.Id,
-                    Username = x.Username,
+                    Username = x.UserName,
                     Type = x.Type,
                     LastMessage = _mapper.Map<MessageViewModel>(x.Messages.OrderByDescending(x => x.CreatedAt).FirstOrDefault()),
                     LastName = x.LastName,
@@ -195,6 +214,22 @@ namespace Messenger.Application.Services.Chats
 
             var chat = _mapper.Map<Chat>(chatModificationDto);
             var entryEntity = _messengerDbContext.Chats.Update(chat);
+            await _messengerDbContext.SaveChangesAsync();
+
+            return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
+        }
+        
+        private async Task<ChatDetailsViewModel> CreateChatAsync(Chat chat)
+        {
+            chat.Users = new List<ChatUser>();
+            chat.Users.Add(new ChatUser() // Bu xolda User o'zi yaratgan chatga admin bo'p qoladi
+            {
+                UserId = _userContextService.GetCurrentUserId(),
+                Chat = chat,
+                IsAdmin = true
+            });
+
+            var entryEntity = await _messengerDbContext.AddAsync(chat);
             await _messengerDbContext.SaveChangesAsync();
 
             return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);

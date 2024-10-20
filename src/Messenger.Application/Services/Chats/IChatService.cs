@@ -6,7 +6,9 @@ namespace Messenger.Application.Services.Chats
 {
     public interface IChatService
     {
-        Task<ChatDetailsViewModel> CreateChatAsync(ChatCreationDto chatCreationDto);          // group yoki kanal ochish
+        Task<ChatDetailsViewModel> CreateChatAsync(ChatCreationDto chatCreationDto);          // keraksiz
+        Task<ChatDetailsViewModel> CreateChannelAsync(ChannelCreationDto channelCreationDto); // kanal ochish
+        Task<ChatDetailsViewModel> CreateGroupAsync(GroupCreationDto groupCreationDto);       // group ochish
         Task<ChatDetailsViewModel> GetOrCreatePrivateChat(long userId);                       // men qaysidur userga yozmoqchi bo'lsam uni userid
                                                                                               // sini jo'nataman va ikkalamizga bitta chat ochiladi
         Task<List<Chat>> GetChatsAsync();                                                     // all chats - admin panel uchun

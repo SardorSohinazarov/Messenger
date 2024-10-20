@@ -11,6 +11,8 @@ namespace Messenger.Application.Common
         public MappingProfiles()
         {
             CreateMap<ChatCreationDto, Chat>();
+            CreateMap<ChannelCreationDto, Chat>();
+            CreateMap<GroupCreationDto, Chat>();
             CreateMap<Chat, ChatViewModel>();
             CreateMap<ChatModificationDto, Chat>();
             CreateMap<ChatUser, ChatUserViewModel>();
