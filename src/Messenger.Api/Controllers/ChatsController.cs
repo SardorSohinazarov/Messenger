@@ -21,7 +21,7 @@ namespace Messenger.Api.Controllers
         [HttpPost("private")]
         public async Task<IActionResult> GetOrCreatePrivateChatAsync(long userId)
         {
-            var chat = await _chatService.GetOrCreatePrivateChat(userId);
+            var chat = await _chatService.GetOrCreatePrivateChatAsync(userId);
 
             return Ok(chat);
         }

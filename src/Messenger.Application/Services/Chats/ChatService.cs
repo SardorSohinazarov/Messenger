@@ -52,41 +52,34 @@ namespace Messenger.Application.Services.Chats
             return await CreateChatAsync(chat);
         }
 
-        public async Task<ChatViewModel> DeleteAsync(long id)
+        public async Task<ChatDetailsViewModel> GetOrCreatePrivateChatAsync(long userId)
         {
-            //adminmi
-            var chat = await _messengerDbContext.Chats
-                .Include(x => x.Users)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var currentUserId = _userContextService.GetCurrentUserId();
 
-            if (chat is null)
-                throw new NotFoundException("Chat topilmadi");
+            var existingChat = await _messengerDbContext.Chats
+                .Include(c => c.Users)
+                .FirstOrDefaultAsync(c => c.Type == EChatType.Private 
+                                       && c.Users.Any(u => u.UserId == currentUserId)
+                                       && c.Users.Any(u => u.UserId == userId));
 
-            var chatUser = chat.Users.FirstOrDefault(x => x.UserId == _userContextService.GetCurrentUserId());
+            if (existingChat is not null)
+                return _mapper.Map<ChatDetailsViewModel>(existingChat);
 
-            if (chatUser is null || !chatUser.IsAdmin)
-                throw new ForbiddenException("Siz faqat o'zingiz yaratgan chatlarni o'chira olasiz.");
+            // Yangi chat yaratamiz
+            var newChat = new Chat
+            {
+                Type = EChatType.Private,
+                Users = new List<ChatUser>
+                {
+                    new ChatUser { UserId = currentUserId },
+                    new ChatUser { UserId = userId }
+                },
+            };
 
-            var entryEntity = _messengerDbContext.Chats.Remove(chat);
+            var entryEntity = await _messengerDbContext.AddAsync(newChat);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<ChatViewModel>(chat);
-        }
-
-        public async Task<List<ChatViewModel>> GetAdminChatsAsync()
-        {
-            var userId = _userContextService.GetCurrentUserId();
-
-            var adminChatIds = await _messengerDbContext.ChatUsers
-                .Where(x => x.UserId == userId && x.IsAdmin)
-                .Select(x => x.ChatId)
-                .ToListAsync();
-
-            var adminChats = await _messengerDbContext.Chats
-                .Where(x => adminChatIds.Contains(x.Id))
-                .ToListAsync();
-
-            return _mapper.Map<List<ChatViewModel>>(adminChats);
+            return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
         }
 
         public async Task<ChatDetailsViewModel> GetChatAsync(long id)
@@ -101,9 +94,6 @@ namespace Messenger.Application.Services.Chats
 
             return _mapper.Map<ChatDetailsViewModel>(chat);
         }
-
-        public async Task<List<Chat>> GetChatsAsync() 
-            => await _messengerDbContext.Chats.ToListAsync();
 
         public async Task<List<ChatViewModel>> GetChatsAsync(ChatFilter filter)
         {
@@ -157,36 +147,6 @@ namespace Messenger.Application.Services.Chats
             return chats;
         }
 
-        public async Task<ChatDetailsViewModel> GetOrCreatePrivateChat(long userId)
-        {
-            var currentUserId = _userContextService.GetCurrentUserId();
-
-            var existingChat = await _messengerDbContext.Chats
-                .Include(c => c.Users)
-                .FirstOrDefaultAsync(c => c.Type == EChatType.Private 
-                                       && c.Users.Any(u => u.UserId == currentUserId)
-                                       && c.Users.Any(u => u.UserId == userId));
-
-            if (existingChat is not null)
-                return _mapper.Map<ChatDetailsViewModel>(existingChat);
-
-            // Yangi chat yaratamiz
-            var newChat = new Chat
-            {
-                Type = EChatType.Private,
-                Users = new List<ChatUser>
-                {
-                    new ChatUser { UserId = currentUserId },
-                    new ChatUser { UserId = userId }
-                },
-            };
-
-            var entryEntity = await _messengerDbContext.AddAsync(newChat);
-            await _messengerDbContext.SaveChangesAsync();
-
-            return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
-        }
-
         public async Task<List<ChatViewModel>> GetOwnerChatsAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
@@ -196,6 +156,22 @@ namespace Messenger.Application.Services.Chats
                 .ToListAsync();
 
             return _mapper.Map<List<ChatViewModel>>(ownerChats);
+        }
+
+        public async Task<List<ChatViewModel>> GetAdminChatsAsync()
+        {
+            var userId = _userContextService.GetCurrentUserId();
+
+            var adminChatIds = await _messengerDbContext.ChatUsers
+                .Where(x => x.UserId == userId && x.IsAdmin)
+                .Select(x => x.ChatId)
+                .ToListAsync();
+
+            var adminChats = await _messengerDbContext.Chats
+                .Where(x => adminChatIds.Contains(x.Id))
+                .ToListAsync();
+
+            return _mapper.Map<List<ChatViewModel>>(adminChats);
         }
 
         public async Task<ChatDetailsViewModel> UpdateChatAsync(ChatModificationDto chatModificationDto)
@@ -222,6 +198,30 @@ namespace Messenger.Application.Services.Chats
             return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
         }
         
+        public async Task<ChatViewModel> DeleteAsync(long id)
+        {
+            //adminmi
+            var chat = await _messengerDbContext.Chats
+                .Include(x => x.Users)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (chat is null)
+                throw new NotFoundException("Chat topilmadi");
+
+            var chatUser = chat.Users.FirstOrDefault(x => x.UserId == _userContextService.GetCurrentUserId());
+
+            if (chatUser is null || !chatUser.IsAdmin)
+                throw new ForbiddenException("Siz faqat o'zingiz yaratgan chatlarni o'chira olasiz.");
+
+            var entryEntity = _messengerDbContext.Chats.Remove(chat);
+            await _messengerDbContext.SaveChangesAsync();
+
+            return _mapper.Map<ChatViewModel>(chat);
+        }
+
+        public async Task<List<Chat>> GetChatsAsync()
+            => await _messengerDbContext.Chats.ToListAsync(); // admin panel sifatida
+
         private async Task<ChatDetailsViewModel> CreateChatAsync(Chat chat)
         {
             chat.Users = new List<ChatUser>();
