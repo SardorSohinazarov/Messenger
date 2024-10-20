@@ -2,6 +2,7 @@
 using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
 using Messenger.Application.DataTransferObjects.Chats;
 using Messenger.Application.DataTransferObjects.Messages;
+using Messenger.Application.DataTransferObjects.Users;
 using Messenger.Domain.Entities;
 
 namespace Messenger.Application.Common
@@ -27,6 +28,7 @@ namespace Messenger.Application.Common
             CreateMap<Message, MessageViewModel>();
 
             CreateMap<User, UserProfile>();
+            CreateMap<User, UserViewModel>();
         }
     }
 }

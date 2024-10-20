@@ -5,6 +5,6 @@ namespace Messenger.Application.DataTransferObjects.Filters
     public class ChatFilter
     {
         public string? UserName { get; set; }
-        public EChatType ChatType { get; set; }
+        public EChatType? ChatType { get; set; }
     }
 }

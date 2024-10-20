@@ -11,7 +11,7 @@ namespace Messenger.Application.DataTransferObjects.Chats
         public bool IsBlocked { get; set; }
         public bool IsAdmin { get; set; }
 
-        public User User { get; set; }
-        public Chat Chat { get; set; }
+        public ChatUserViewModel User { get; set; }
+        public ChatViewModel Chat { get; set; }
     }
 }

@@ -18,14 +18,6 @@ namespace Messenger.Api.Controllers
         public ChatsController(IChatService chatService) 
             => _chatService = chatService;
 
-        [HttpPost]
-        public async Task<IActionResult> CreateChatAsync(ChatCreationDto chatCreationDto)
-        {
-            var chat = await _chatService.CreateChatAsync(chatCreationDto);
-
-            return Ok(chat);
-        }
-
         [HttpPost("private")]
         public async Task<IActionResult> GetOrCreatePrivateChatAsync(long userId)
         {
