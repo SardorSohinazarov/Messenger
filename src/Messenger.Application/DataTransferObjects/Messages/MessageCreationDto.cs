@@ -4,8 +4,7 @@ namespace Messenger.Application.DataTransferObjects.Messages
 {
     public class MessageCreationDto
     {
-        public long? FromId { get; set; }                     // Xabarni yuborgan foydalanuvchi ID
-        public long? SenderChatId { get; set; }               // Xabar yuborilgan chat ID
+        //public long? SenderChatId { get; set; }               // Xabar yuborilgan chat ID
         public long ChatId { get; set; }                      // Xabar jo'natilgan chat ID
 
         public string? Text { get; set; }                      // Xabar matni
@@ -22,9 +21,9 @@ namespace Messenger.Application.DataTransferObjects.Messages
 
         public string? NewChatTitle { get; set; }              // Chatning yangi sarlavhasi
         //public List<PhotoSize> NewChatPhoto { get; set; }   // Chatning yangi fotosi
-        public bool? DeleteChatPhoto { get; set; }            // Chat fotosi o'chirilgan bo'lsa True
-        public bool? GroupChatCreated { get; set; }           // Guruh chat yaratilgan bo'lsa True
-        public bool? ChannelChatCreated { get; set; }         // Kanal chat yaratilgan bo'lsa True
+        public bool DeleteChatPhoto { get; set; }            // Chat fotosi o'chirilgan bo'lsa True
+        public bool GroupChatCreated { get; set; }           // Guruh chat yaratilgan bo'lsa True
+        public bool ChannelChatCreated { get; set; }         // Kanal chat yaratilgan bo'lsa True
         public long? NewChatMemberId { get; set; }           // Yangi chat a'zosi ID
     }
 }

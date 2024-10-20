@@ -1,4 +1,6 @@
-﻿using Messenger.Domain.Entities;
+﻿using Messenger.Application.DataTransferObjects.Chats;
+using Messenger.Application.DataTransferObjects.Users;
+using Messenger.Domain.Entities;
 
 namespace Messenger.Application.DataTransferObjects.Messages
 {
@@ -6,13 +8,13 @@ namespace Messenger.Application.DataTransferObjects.Messages
     {
         public Guid Id { get; set; }                          // Xabar ID
         public long? FromId { get; set; }                     // Xabarni yuborgan foydalanuvchi ID
-        public User From { get; set; }                        // Xabarni yuborgan foydalanuvchi
+        public UserViewModel From { get; set; }                        // Xabarni yuborgan foydalanuvchi
 
-        public long? SenderChatId { get; set; }               // Xabar yuborilgan chat ID
-        public Chat SenderChat { get; set; }                  // Xabar yuborilgan chat
+        //public long? SenderChatId { get; set; }               // Xabar yuborilgan chat ID
+        //public Chat SenderChat { get; set; }                  // Xabar yuborilgan chat
 
         public long ChatId { get; set; }                      // Xabar jo'natilgan chat ID
-        public Chat Chat { get; set; }                        // Xabar jo'natilgan chat
+        public ChatViewModel Chat { get; set; }                        // Xabar jo'natilgan chat
 
         public string Text { get; set; }                      // Xabar matni
         //public Animation Animation { get; set; }            // Xabar bilan birga kelgan animatsiya
@@ -32,7 +34,7 @@ namespace Messenger.Application.DataTransferObjects.Messages
         public bool? GroupChatCreated { get; set; }           // Guruh chat yaratilgan bo'lsa True
         public bool? ChannelChatCreated { get; set; }         // Kanal chat yaratilgan bo'lsa True
         public string NewChatMemberId { get; set; }           // Yangi chat a'zosi ID
-        public User NewChatMember { get; set; }               // Yangi chat a'zosi
+        public UserViewModel NewChatMember { get; set; }               // Yangi chat a'zosi
         public DateTime CreatedAt { get; set; }
     }
 }

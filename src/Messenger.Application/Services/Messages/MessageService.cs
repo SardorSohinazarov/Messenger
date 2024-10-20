@@ -29,18 +29,22 @@ namespace Messenger.Application.Services.Messages
 
         public async Task<MessageViewModel> CreateMessageAsync(MessageCreationDto messageCreationDto)
         {
+            var userId = _userContextService.GetCurrentUserId();
+
             var validator = new MessageCreationValidator();
             var validationResult = await validator.ValidateAsync(messageCreationDto);
             if (!validationResult.IsValid)
                 throw new ValidationException("Model yaratish uchun yaroqsiz", validationResult.Errors);
 
             var chatUser = await _messengerDbContext.ChatUsers
-                .FirstOrDefaultAsync(x => x.ChatId == messageCreationDto.ChatId && x.UserId == messageCreationDto.FromId);
+                .FirstOrDefaultAsync(x => x.ChatId == messageCreationDto.ChatId && x.UserId == userId);
 
             if (chatUser is null)
                 throw new NotFoundException("Chatga qo'shiling!");
 
             var message = _mapper.Map<Message>(messageCreationDto);
+            message.FromId = userId;
+
             var entityEntry = await _messengerDbContext.AddAsync(message);
             await _messengerDbContext.SaveChangesAsync();
 

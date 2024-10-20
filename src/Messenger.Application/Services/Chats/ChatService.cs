@@ -112,21 +112,47 @@ namespace Messenger.Application.Services.Chats
             var chats = await _messengerDbContext.Chats
                 .Include(x => x.Users)
                 .Include(x => x.Messages)
+                .ThenInclude(x => x.From)
                 .Where(x => x.Users.Select(x => x.UserId).Contains(userId))
                 .Where(x => filter.UserName == null || x.UserName == filter.UserName)
                 .Where(x => filter.ChatType == null || x.Type == filter.ChatType)
                 .Select(x => new ChatViewModel()
                 {
-                    Id = x.Id,
-                    Username = x.UserName,
-                    Type = x.Type,
-                    LastMessage = _mapper.Map<MessageViewModel>(x.Messages.OrderByDescending(x => x.CreatedAt).FirstOrDefault()),
-                    LastName = x.LastName,
-                    Title = x.Title,
-                    FirstName = x.FirstName,
-                    Photo = x.Photo
+                        Id = x.Id,
+                        Username = x.UserName,
+                        Type = x.Type,
+                        LastMessage = _mapper.Map<MessageViewModel>(x.Messages.OrderByDescending(x => x.CreatedAt).FirstOrDefault()),
+                        LastName = x.LastName,
+                        Title = x.Title,
+                        FirstName = x.FirstName,
+                        Photo = x.Photo
                 })
                 .ToListAsync();
+
+            var privateChatIds = chats
+                .Where(x => x.Type == EChatType.Private)
+                .Select(x => x.Id)
+                .ToList();
+
+            var users = await _messengerDbContext.ChatUsers
+                .Include(x => x.User)
+                .Where(x => privateChatIds.Contains(x.ChatId))
+                .Where(x => x.UserId != userId)
+                .ToListAsync();
+
+            chats = chats.Select(x =>
+            {
+                if (x.Type == EChatType.Private)
+                {
+                    var user = users.FirstOrDefault(u => u.ChatId == x.Id);
+                    x.Title = $"{user.User.FirstName} {user.User.LastName}";
+                    x.Username = user.User.UserName;
+                    x.FirstName = user.User.FirstName;
+                    x.LastName = user.User.LastName;
+                }
+
+                return x;
+            }).ToList();
 
             return chats;
         }

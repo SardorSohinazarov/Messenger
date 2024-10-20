@@ -7,15 +7,10 @@ namespace Messenger.Application.Validators.Messages
     {
         public MessageCreationValidator()
         {
-            // FromId uchun validatsiya
-            RuleFor(message => message.FromId)
-                .GreaterThan(0).When(message => message.FromId.HasValue) // Agar qiymat mavjud bo'lsa, 0 dan katta bo'lishi kerak.
-                .WithMessage("Foydalanuvchi ID 0 dan katta bo'lishi kerak.");
-
-            // SenderChatId uchun validatsiya
-            RuleFor(message => message.SenderChatId)
-                .GreaterThan(0).When(message => message.SenderChatId.HasValue) // Agar qiymat mavjud bo'lsa, 0 dan katta bo'lishi kerak.
-                .WithMessage("Xabar yuborilgan chat ID 0 dan katta bo'lishi kerak.");
+            //// SenderChatId uchun validatsiya
+            //RuleFor(message => message.SenderChatId)
+            //    .GreaterThan(0).When(message => message.SenderChatId.HasValue) // Agar qiymat mavjud bo'lsa, 0 dan katta bo'lishi kerak.
+            //    .WithMessage("Xabar yuborilgan chat ID 0 dan katta bo'lishi kerak.");
 
             // ChatId uchun validatsiya
             RuleFor(message => message.ChatId)
