@@ -61,24 +61,19 @@ namespace Messenger.Application.Services.Auth.Google
                 return await _tokenService.GenerateTokenAsync(existingUser);
 
             var confirmationCode = new Random().Next(1000, 9999).ToString();
-            var salt = Guid.NewGuid().ToString();
-            var passwordHash = _passwordHasher.Encrypt(salt, salt);
             var refreshToken = Guid.NewGuid().ToString();
-            var userName = payload.Email.Substring(payload.Email.Length - 10); // Username uchun emaildan qirqib olamiz
+            var userName = payload.Email.Substring(0,payload.Email.Length - 10); // Username uchun emaildan qirqib olamiz
                                                                                // ( email: sardorstudent0618@gmail.com -> username: sardorstudent0618)
             var user = new User()
             {
                 FirstName = payload.GivenName,
                 LastName = payload.FamilyName,
                 Email = payload.Email,
-                IsEmailConfirmed = true,
                 //ProfilePicture = payload.Picture,
                 //LoginProviderSubject = payload.Subject,
-                UserName = payload.Email,
+                UserName = userName,
                 RefreshTokenExpireDate = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
                 RefreshToken = Guid.NewGuid().ToString(),
-                PasswordHash = passwordHash,
-                Salt = salt,
                 ConfirmationCode = confirmationCode,
                 LoginProvider = ELoginProvider.Google
             };

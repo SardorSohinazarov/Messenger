@@ -18,6 +18,14 @@ namespace Messenger.Api.Controllers
             _chatUserService = chatUserService;
         }
 
+        [HttpGet("join")]
+        public async Task<IActionResult> JoinChatAsync(long id)
+        {
+            var chat = await _chatUserService.JoinChatAsync(id);
+
+            return Ok(chat);
+        }
+
         [HttpGet("join-link")]
         public async Task<IActionResult> JoinChatAsync(string link)
         {

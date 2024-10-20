@@ -82,7 +82,7 @@ namespace Messenger.Application.Services.Auth
 
             var user = await _messengerDbContext.Users
                 .FirstOrDefaultAsync(x => x.Id == userId 
-                                       //&& username == x.UserName
+                                       // && username == x.UserName
                                        );
 
             return _mapper.Map<UserProfile>(user);
@@ -107,7 +107,7 @@ namespace Messenger.Application.Services.Auth
             if (user is null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
-            if(!(user.LoginProvider == ELoginProvider.Email && user.IsEmailConfirmed.Value))
+            if(!user.IsEmailConfirmed.Value)
                 throw new ForbiddenException("Email tasdiqlanmagan.");
 
             // Parolni tekshirish
@@ -156,15 +156,17 @@ namespace Messenger.Application.Services.Auth
             {
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
+                UserName = userName,
                 Email = registerDto.Email,
                 PhoneNumber = registerDto.PhoneNumber,
                 LanguageCode = null,
                 ConfirmationCode = confirmationCode,
+                IsEmailConfirmed = false,
                 Salt = salt,
                 PasswordHash = passwordHash,
                 RefreshToken = refreshToken,
                 RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30),
-                LoginProvider = Domain.Enums.ELoginProvider.Email
+                LoginProvider = ELoginProvider.Email
             };
 
             await _messengerDbContext.Users.AddAsync(user);

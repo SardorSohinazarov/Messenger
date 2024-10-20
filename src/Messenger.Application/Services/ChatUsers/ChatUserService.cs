@@ -3,6 +3,7 @@ using Messenger.Application.DataTransferObjects.Chats;
 using Messenger.Application.DataTransferObjects.ChatUsers;
 using Messenger.Application.Helpers.UserContext;
 using Messenger.Domain.Entities;
+using Messenger.Domain.Enums;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +28,44 @@ namespace Messenger.Application.Services.ChatUsers
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _userContextService = userContextService;
+        }
+
+        public async Task<ChatDetailsViewModel> JoinChatAsync(long id)
+        {
+            var userId = _userContextService.GetCurrentUserId();
+
+            var chatUser = await _messengerDbContext.ChatUsers
+                .Include(x => x.Chat)
+                .FirstOrDefaultAsync(x => x.ChatId == id
+                                       && x.UserId == userId);
+
+            if (chatUser is not null)
+            {
+                if (chatUser.IsBlocked)
+                    throw new ForbiddenException("Siz bloklangansiz.");
+                else
+                    return _mapper.Map<ChatDetailsViewModel>(chatUser.Chat);
+            }
+
+            var chat = await _messengerDbContext.Chats
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (chat is null)
+                throw new NotFoundException("Chat topilmadi.");
+
+            if (chat.Type == EChatType.Private)
+                throw new ValidationException("Private chatga qo'shila olmaysiz.");
+
+            chatUser = new ChatUser()
+            {
+                ChatId = id,
+                UserId = userId
+            };
+
+            await _messengerDbContext.ChatUsers.AddAsync(chatUser);
+            await _messengerDbContext.SaveChangesAsync();
+
+            return _mapper.Map<ChatDetailsViewModel>(chat);
         }
 
         public async Task<ChatDetailsViewModel> JoinChatAsync(string link)
@@ -138,6 +177,14 @@ namespace Messenger.Application.Services.ChatUsers
 
         public async Task<ChatInviteLinkViewModel> CreateChatInviteLinkAsync(long chatId)
         {
+            var chat = await _messengerDbContext.Chats
+                .FirstOrDefaultAsync(x => x.Id == chatId
+                                       && x.Type != EChatType.Private);
+
+            if (chat is null)
+                throw new NotFoundException($"Faqat Group yoki Channel uchun chat link yarata olasiz," +
+                                            $" chat topilmadi (id:{chatId}).");
+
             var inviteLink = Guid.NewGuid().ToString("N");
 
             var chatLink = new ChatInviteLink()

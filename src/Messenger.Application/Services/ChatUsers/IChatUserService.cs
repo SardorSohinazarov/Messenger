@@ -7,6 +7,7 @@ namespace Messenger.Application.Services.ChatUsers
     {
         Task<ChatInviteLinkViewModel> CreateChatInviteLinkAsync(long chatId);
         Task<ChatDetailsViewModel> JoinChatAsync(string link);
+        Task<ChatDetailsViewModel> JoinChatAsync(long id);
         Task LeaveChatAsync(long chatId);
         Task<ChatDetailsViewModel> BlokChatUserAsync(ChatUserDto chatUserDto);
         Task<ChatDetailsViewModel> UnBlokChatUserAsync(ChatUserDto chatUserDto);
