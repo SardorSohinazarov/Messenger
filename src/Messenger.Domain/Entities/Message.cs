@@ -7,8 +7,8 @@ namespace Messenger.Domain.Entities
         public long? FromId { get; set; }                     // Xabarni yuborgan foydalanuvchi ID
         public User From { get; set; }                        // Xabarni yuborgan foydalanuvchi
 
-        public long? SenderChatId { get; set; }               // Xabar yuborilgan chat ID
-        public Chat SenderChat { get; set; }                  // Xabar yuborilgan chat
+        //public long? SenderChatId { get; set; }               // Xabar yuborilgan chat ID
+        //public Chat SenderChat { get; set; }                  // Xabar yuborilgan chat
 
         public long ChatId { get; set; }                      // Xabar jo'natilgan chat ID
         public Chat Chat { get; set; }                        // Xabar jo'natilgan chat
