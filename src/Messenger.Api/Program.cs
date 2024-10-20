@@ -1,13 +1,13 @@
 using Messenger.Infrastructure;
 using Messenger.Application;
-using Messenger.Application.DataTransferObjects.Auth.Google;
 using Messenger.Api.Extensions;
 using Messenger.Application.DataTransferObjects.CommonOptions;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddJsonOptions(options 
-    => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
+    => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();

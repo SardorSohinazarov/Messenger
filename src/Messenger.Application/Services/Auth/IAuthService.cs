@@ -15,7 +15,7 @@ namespace Messenger.Application.Services.Auth
         Task RegisterAsync(RegisterDto registerDto);
         Task<TokenDto> ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto);
         Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
-        Task<UserProfile> GetUserProfileAsync(string username);
+        Task<UserProfile> GetUserProfileAsync();
         Task<UserProfile> GetUserProfileAsync(long userId);
     }
 }

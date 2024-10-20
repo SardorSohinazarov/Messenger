@@ -13,10 +13,8 @@ namespace Messenger.Api.Controllers
     {
         private readonly IChatUserService _chatUserService;
 
-        public ChatUsersController(IChatUserService chatUserService)
-        {
-            _chatUserService = chatUserService;
-        }
+        public ChatUsersController(IChatUserService chatUserService) 
+            => _chatUserService = chatUserService;
 
         [HttpGet("join")]
         public async Task<IActionResult> JoinChatAsync(long id)
@@ -26,7 +24,7 @@ namespace Messenger.Api.Controllers
             return Ok(chat);
         }
 
-        [HttpGet("join-link")]
+        [HttpGet("join-with-link")]
         public async Task<IActionResult> JoinChatAsync(string link)
         {
             var chat = await _chatUserService.JoinChatAsync(link);
@@ -58,7 +56,7 @@ namespace Messenger.Api.Controllers
             return Ok(chat);
         }
 
-        [HttpGet("invite-link")]
+        [HttpGet("create-link")]
         public async Task<IActionResult> CreateChatInviteLinkAsync(long chatId)
         {
             var link = await _chatUserService.CreateChatInviteLinkAsync(chatId);

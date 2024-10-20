@@ -18,12 +18,5 @@ namespace Messenger.Application.DataTransferObjects.Messages
         //public Location Location { get; set; }              // Xabarga biriktirilgan joylashuv
         //public Story Story { get; set; }                    // Xabarga biriktirilgan hikoya
         //public string Caption { get; set; }                 // Xabar bilan birga kelgan media fayl sarlavhasi
-
-        public string? NewChatTitle { get; set; }              // Chatning yangi sarlavhasi
-        //public List<PhotoSize> NewChatPhoto { get; set; }   // Chatning yangi fotosi
-        public bool DeleteChatPhoto { get; set; }            // Chat fotosi o'chirilgan bo'lsa True
-        public bool GroupChatCreated { get; set; }           // Guruh chat yaratilgan bo'lsa True
-        public bool ChannelChatCreated { get; set; }         // Kanal chat yaratilgan bo'lsa True
-        public long? NewChatMemberId { get; set; }           // Yangi chat a'zosi ID
     }
 }

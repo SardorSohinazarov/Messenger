@@ -28,7 +28,10 @@ namespace Messenger.Infrastructure.Persistence
         public MessengerDbContext(IHttpContextAccessor httpContextAccessor) 
             => _httpContextAccessor = httpContextAccessor;
 
-        public MessengerDbContext(DbContextOptions<MessengerDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
+        public MessengerDbContext(
+            DbContextOptions<MessengerDbContext> options,
+            IHttpContextAccessor httpContextAccessor)
+            : base(options)
         {
             Database.Migrate(); // Migratsiyani avtomatik ishga tushirish
             _httpContextAccessor = httpContextAccessor;
@@ -43,6 +46,7 @@ namespace Messenger.Infrastructure.Persistence
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            // soft delete
             var softDeleteEntries = ChangeTracker
                 .Entries<ISoftDeletable>()
                 .Where(x => x.State == EntityState.Deleted);
@@ -53,6 +57,7 @@ namespace Messenger.Infrastructure.Persistence
                 entry.Property(nameof(ISoftDeletable.IsDeleted)).CurrentValue = true;
             }
 
+            //qo'shilayotgan entitylarni CreatedBy va CreatedAt propertylariga qiymat belgilaydi
             var newEntries = ChangeTracker
                 .Entries<IAuditable>()
                 .Where(x => x.State == EntityState.Added);
@@ -65,6 +70,7 @@ namespace Messenger.Infrastructure.Persistence
                 entry.Property(nameof(IAuditable.CreatedAt)).CurrentValue = DateTime.UtcNow;
             }
 
+            //update bo'layotgan entitylarni LastModifiedBy va LastModifiedAt propertylarini yangilaydi
             var updatedEntries = ChangeTracker
                 .Entries<IAuditable>()
                 .Where(x => x.State == EntityState.Modified);

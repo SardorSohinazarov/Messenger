@@ -96,6 +96,7 @@ namespace Messenger.Application.Services.Messages
         public async Task<List<MessageViewModel>> GetMessagesAsync(long chatId)
         {
             var messages = await _messengerDbContext.Messages
+                .Include(x => x.From)
                 .Where(x => x.ChatId == chatId)
                 .ToListAsync();
 

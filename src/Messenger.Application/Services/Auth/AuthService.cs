@@ -76,14 +76,12 @@ namespace Messenger.Application.Services.Auth
             return await _tokenService.GenerateTokenAsync(user);
         }
 
-        public async Task<UserProfile> GetUserProfileAsync(string username)
+        public async Task<UserProfile> GetUserProfileAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
 
             var user = await _messengerDbContext.Users
-                .FirstOrDefaultAsync(x => x.Id == userId 
-                                       // && username == x.UserName
-                                       );
+                .FirstOrDefaultAsync(x => x.Id == userId);
 
             return _mapper.Map<UserProfile>(user);
         }

@@ -20,16 +20,6 @@ namespace Messenger.Application.Validators.Messages
             RuleFor(message => message.Text)
                 .MaximumLength(500).When(message => !string.IsNullOrEmpty(message.Text))
                 .WithMessage("Xabar matni 500 belgidan oshmasligi kerak."); // Faqat matn mavjud bo'lsa tekshiriladi.
-
-            // NewChatTitle uchun validatsiya (null bo'lishi mumkin)
-            RuleFor(message => message.NewChatTitle)
-                .MaximumLength(100).When(message => !string.IsNullOrEmpty(message.NewChatTitle))
-                .WithMessage("Chatning yangi sarlavhasi 100 belgidan oshmasligi kerak."); // Faqat sarlavha mavjud bo'lsa tekshiriladi.
-
-            // NewChatMemberId uchun validatsiya (null bo'lishi mumkin)
-            RuleFor(message => message.NewChatMemberId)
-                .GreaterThan(0).When(message => message.NewChatMemberId.HasValue)
-                .WithMessage("New chat member ID 0 dan katta bo'lishi kerak."); // Faqat ID mavjud bo'lsa tekshiriladi.
         }
     }
 }

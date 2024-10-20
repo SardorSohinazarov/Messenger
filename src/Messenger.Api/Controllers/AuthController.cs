@@ -13,7 +13,9 @@ namespace Messenger.Api.Controllers
         private readonly IAuthService _authService;
         private readonly IGoogleAuthService _googleAuthService;
 
-        public AuthController(IAuthService authService, IGoogleAuthService googleAuthService)
+        public AuthController(
+            IAuthService authService,
+            IGoogleAuthService googleAuthService)
         {
             _authService = authService;
             _googleAuthService = googleAuthService;
@@ -59,12 +61,21 @@ namespace Messenger.Api.Controllers
             return Ok(token);
         }
 
-        [HttpGet("{username}")]
-        public async Task<IActionResult> GetUserProfileAsync(string username)
+        //profile
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetUserProfileAsync()
         {
-            var profile = await _authService.GetUserProfileAsync(username);
+            var profile = await _authService.GetUserProfileAsync();
 
             return Ok(profile);
         }
+
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfileAsync()
+            => throw new NotImplementedException();
+
+        [HttpDelete("delete-profile")]
+        public async Task<IActionResult> DeleteProfileAsync()
+            => throw new NotImplementedException();
     }
 }
