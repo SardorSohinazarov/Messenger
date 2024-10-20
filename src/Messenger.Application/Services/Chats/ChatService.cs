@@ -52,29 +52,6 @@ namespace Messenger.Application.Services.Chats
             return await CreateChatAsync(chat);
         }
 
-        // keraksiz
-        public async Task<ChatDetailsViewModel> CreateChatAsync(ChatCreationDto chatCreationDto)
-        {
-            var validator = new ChatCreationDtoValidator();
-            var validationResult = await validator.ValidateAsync(chatCreationDto);
-            if (!validationResult.IsValid)
-                throw new ValidationException("Model yaratish uchun yaroqsiz",validationResult.Errors);
-
-            var chat = _mapper.Map<Chat>(chatCreationDto);
-            chat.Users = new List<ChatUser>();
-            chat.Users.Add(new ChatUser() // Bu xolda User o'zi yaratgan chatga admin bo'p qoladi
-            {
-                UserId = _userContextService.GetCurrentUserId(),
-                Chat = chat,
-                IsAdmin = true
-            });
-
-            var entryEntity = await _messengerDbContext.AddAsync(chat);
-            await _messengerDbContext.SaveChangesAsync();
-
-            return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
-        }
-
         public async Task<ChatViewModel> DeleteAsync(long id)
         {
             //adminmi
