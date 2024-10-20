@@ -77,16 +77,16 @@ namespace Messenger.Application.Services.Chats
         {
             var userId = _userContextService.GetCurrentUserId();
 
-            var adminChats = await _messengerDbContext.ChatUsers
+            var adminChatIds = await _messengerDbContext.ChatUsers
                 .Where(x => x.UserId == userId && x.IsAdmin)
                 .Select(x => x.ChatId)
                 .ToListAsync();
 
-            var ownerChats = await _messengerDbContext.Chats
-                .Where(x => adminChats.Contains(x.Id))
+            var adminChats = await _messengerDbContext.Chats
+                .Where(x => adminChatIds.Contains(x.Id))
                 .ToListAsync();
 
-            return _mapper.Map<List<ChatViewModel>>(ownerChats);
+            return _mapper.Map<List<ChatViewModel>>(adminChats);
         }
 
         public async Task<ChatDetailsViewModel> GetChatAsync(long id)
