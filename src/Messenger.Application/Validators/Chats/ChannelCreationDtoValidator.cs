@@ -7,6 +7,7 @@ namespace Messenger.Application.Validators.Chats
     {
         public ChannelCreationDtoValidator()
         {
+            //todo
         }
     }
 }
