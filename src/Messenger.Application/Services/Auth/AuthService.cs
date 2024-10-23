@@ -143,6 +143,7 @@ namespace Messenger.Application.Services.Auth
             return await _tokenService.RefreshTokenAsync(refreshTokenDto);
         }
 
+        //Todo email html codeni boshqa joydan o'qishligi kerak M:bazadan
         public async Task RegisterAsync(RegisterDto registerDto)
         {
             var validator = new RegisterDtoValidator();
@@ -396,6 +397,7 @@ namespace Messenger.Application.Services.Auth
             await _emailService.SendEmailAsync(user.Email, user.FirstName, "Confirm Delete Account", emailBody.ToString());
         }
 
+        //Todo email html codeni boshqa joydan o'qishligi kerak M:bazadan
         public async Task<UserProfile> ConfirmDeleteProfileAsync(EmailConfirmationDto emailConfirmationDto)
         {
             var validator = new EmailConfirmationDtoValidator();
