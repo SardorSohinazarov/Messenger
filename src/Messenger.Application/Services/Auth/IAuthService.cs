@@ -17,5 +17,8 @@ namespace Messenger.Application.Services.Auth
         Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
         Task<UserProfile> GetUserProfileAsync();
         Task<UserProfile> GetUserProfileAsync(long userId);
+        Task<UserProfile> UpdateUserProfileAsync(UserProfileModificationDto userProfileModificationDto);
+        Task DeleteUserProfileAsync();
+        Task<UserProfile> ConfirmDeleteProfileAsync(EmailConfirmationDto emailConfirmationDto);
     }
 }

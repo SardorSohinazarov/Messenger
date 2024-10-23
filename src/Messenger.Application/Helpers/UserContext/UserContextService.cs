@@ -25,7 +25,14 @@ namespace Messenger.Application.Helpers.UserContext
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim != null && long.TryParse(userIdClaim.Value, out var userId))
-                return await _messengerDbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            {
+                var user = await _messengerDbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+
+                if (user is not null)
+                    return user;
+
+                throw new NotFoundException("User topilmadi");
+            }
 
             throw new NotFoundException("Foydalanuvchi ID topilmadi");
         }

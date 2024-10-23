@@ -1,5 +1,6 @@
 ﻿using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Application.DataTransferObjects.Auth.Google;
+using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
 using Messenger.Application.Services.Auth;
 using Messenger.Application.Services.Auth.Google;
 using Microsoft.AspNetCore.Mvc;
@@ -71,11 +72,27 @@ namespace Messenger.Api.Controllers
         }
 
         [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfileAsync()
-            => throw new NotImplementedException();
+        public async Task<IActionResult> UpdateProfileAsync(UserProfileModificationDto userProfileModificationDto)
+        {
+            var profile = await _authService.UpdateUserProfileAsync(userProfileModificationDto);
+
+            return Ok(profile);
+        }
 
         [HttpDelete("delete-profile")]
         public async Task<IActionResult> DeleteProfileAsync()
-            => throw new NotImplementedException();
+        {
+            await _authService.DeleteUserProfileAsync();
+
+            return Ok();
+        }
+
+        [HttpGet("confirm-delete-profile")]
+        public async Task<IActionResult> ConfirmDeleteProfileAsync([FromQuery] EmailConfirmationDto emailConfirmationDto)
+        {
+            var userProfile = await _authService.ConfirmDeleteProfileAsync(emailConfirmationDto);
+
+            return Ok(userProfile);
+        }
     }
 }
