@@ -65,7 +65,6 @@ namespace Messenger.Application.Services.Token
 
         public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
         {
-            // 1. Validate the access token (optional)
             var principal = GetPrincipalFromExpiredToken(refreshTokenDto.AccessToken);
             if (principal == null)
                 throw new UnauthorizedAccessException("Invalid access token.");

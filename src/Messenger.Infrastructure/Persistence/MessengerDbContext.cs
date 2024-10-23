@@ -62,11 +62,13 @@ namespace Messenger.Infrastructure.Persistence
                 .Entries<IAuditable>()
                 .Where(x => x.State == EntityState.Added);
 
-            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdString = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            long? userId = userIdString is not null ? long.Parse(userIdString) : null;
 
             foreach (var entry in newEntries)
             {
-                entry.Property(nameof(IAuditable.CreatedBy)).CurrentValue = long.Parse(userId);
+                if(userId is not null)
+                    entry.Property(nameof(IAuditable.CreatedBy)).CurrentValue = userId.Value;
                 entry.Property(nameof(IAuditable.CreatedAt)).CurrentValue = DateTime.UtcNow;
             }
 
@@ -77,7 +79,8 @@ namespace Messenger.Infrastructure.Persistence
 
             foreach (var entry in updatedEntries)
             {
-                entry.Property(nameof(IAuditable.LastModifiedBy)).CurrentValue = long.Parse(userId);
+                if(userId is not null)
+                    entry.Property(nameof(IAuditable.LastModifiedBy)).CurrentValue = userId.Value;
                 entry.Property(nameof(IAuditable.LastModifiedAt)).CurrentValue = DateTime.UtcNow;
             }
 

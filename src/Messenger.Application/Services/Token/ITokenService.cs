@@ -1,6 +1,5 @@
 ﻿using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Domain.Entities;
-using System.Security.Claims;
 
 namespace Messenger.Application.Services.Token
 {
