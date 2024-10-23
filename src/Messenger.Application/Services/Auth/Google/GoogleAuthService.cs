@@ -60,7 +60,6 @@ namespace Messenger.Application.Services.Auth.Google
             if(existingUser is not null)
                 return await _tokenService.GenerateTokenAsync(existingUser);
 
-            var confirmationCode = new Random().Next(1000, 9999).ToString();
             var refreshToken = Guid.NewGuid().ToString();
             var userName = payload.Email.Substring(0,payload.Email.Length - 10); // Username uchun emaildan qirqib olamiz
                                                                                // ( email: sardorstudent0618@gmail.com -> username: sardorstudent0618)
@@ -74,7 +73,6 @@ namespace Messenger.Application.Services.Auth.Google
                 UserName = userName,
                 RefreshTokenExpireDate = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
                 RefreshToken = Guid.NewGuid().ToString(),
-                ConfirmationCode = confirmationCode,
                 LoginProvider = ELoginProvider.Google
             };
 

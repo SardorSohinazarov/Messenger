@@ -29,7 +29,7 @@ namespace Messenger.Application
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddAutoMapper(typeof(MappingProfiles));
-
+            services.AddMemoryCache();
             services.AddHttpContextAccessor();
             services.AddHttpClient();
 

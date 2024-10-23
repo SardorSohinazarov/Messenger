@@ -29,6 +29,7 @@ namespace Messenger.Application.Common
 
             CreateMap<User, UserProfile>();
             CreateMap<User, UserViewModel>();
+            CreateMap<UserProfileModificationDto, User>();
         }
     }
 }

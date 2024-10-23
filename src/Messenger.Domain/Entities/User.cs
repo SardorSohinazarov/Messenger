@@ -16,9 +16,6 @@ namespace Messenger.Domain.Entities
         public string? Salt { get; set; }  // Parolni himoyalash uchun ishlatiladigan tuz
         public string RefreshToken { get; set; }  // Foydalanuvchining yangilanish tokeni
         public DateTime RefreshTokenExpireDate { get; set; }  // Yangilanish tokenining amal qilish muddati
-
-        // Todo: Shuni memory cache yordamida implement qilish kerak buyerda kerak emas
-        public string ConfirmationCode { get; set; }  // Foydalanuvchi ro'yxatdan o'tishni tasdiqlash kodi
         public bool? IsEmailConfirmed { get; set; }  // Foydalanuvchi elektron pochtasini tasdiqlaganmi
         public ELoginProvider LoginProvider { get; set; }  // Foydalanuvchi qanday tizimdan kirganini bildiradi
 
