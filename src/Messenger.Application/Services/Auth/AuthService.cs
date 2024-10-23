@@ -16,6 +16,7 @@ using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
 using AutoMapper;
 using Messenger.Application.Helpers.UserContext;
 using Microsoft.Extensions.Caching.Memory;
+using System.Runtime.Serialization;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -53,96 +54,6 @@ namespace Messenger.Application.Services.Auth
             _memoryCache = memoryCache;
         }
 
-        //Todo Email tasdiqlashda code malum vaqt ichida kiritilishi kerak (masalan: 3:00)
-        public async Task<TokenDto> ConfirmEmailAsync([FromForm]EmailConfirmationDto emailConfirmationDto)
-        {
-            var validator = new EmailConfirmationDtoValidator();
-            var result = await validator.ValidateAsync(emailConfirmationDto);
-
-            if (!result.IsValid)
-                throw new ValidationException("Model email tasdiqlash uchun yaroqsiz", result.Errors);
-
-            var user = await _messengerDbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == emailConfirmationDto.Email);
-
-            if(!user.IsEmailConfirmed.HasValue || user.IsEmailConfirmed.Value)
-                throw new Exception("Email allaqachon tasdiqlangan, Login qiling!");
-
-            if (user is null)
-                throw new NotFoundException("Foydalanuvchi topilmadi.");
-
-            if (user.ConfirmationCode != emailConfirmationDto.ConfirmationCode)
-                throw new Exception("Tasdiqlash kodi noto'g'ri.");
-
-            user.IsEmailConfirmed = true;
-            await _messengerDbContext.SaveChangesAsync();
-
-            return await _tokenService.GenerateTokenAsync(user);
-        }
-
-        public async Task<UserProfile> GetUserProfileAsync()
-        {
-            var userId = _userContextService.GetCurrentUserId();
-
-            var user = await _messengerDbContext.Users
-                .FirstOrDefaultAsync(x => x.Id == userId);
-
-            if (user is null)
-                throw new NotFoundException("User topilmadi.");
-
-            return _mapper.Map<UserProfile>(user);
-        }
-
-        public async Task<UserProfile> GetUserProfileAsync(long userId)
-        {
-            var user = await _messengerDbContext.Users
-                .FirstOrDefaultAsync(x => x.Id == userId);
-
-            if (user is null)
-                throw new NotFoundException("User topilmadi.");
-
-            return _mapper.Map<UserProfile>(user);
-        }
-
-        public async Task<TokenDto> LoginAsync(LoginDto loginDto)
-        {
-            var validator = new LoginDtoValidator();
-            var result = await validator.ValidateAsync(loginDto);
-
-            if (!result.IsValid)
-                throw new ValidationException("Model login qilish uchun yaroqsiz", result.Errors);
-
-            var user = await _messengerDbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
-
-            if (user is null)
-                throw new NotFoundException("Foydalanuvchi topilmadi.");
-
-            if(!user.IsEmailConfirmed.Value)
-                throw new ForbiddenException("Email tasdiqlanmagan.");
-
-            // Parolni tekshirish
-            if (!_passwordHasher.Verify(user.PasswordHash, loginDto.Password, user.Salt))
-                throw new ValidationException("Noto'g'ri parol.");
-
-            user.RefreshToken = Guid.NewGuid().ToString();
-            user.RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30);
-            await _messengerDbContext.SaveChangesAsync();
-
-            return await _tokenService.GenerateTokenAsync(user);
-        }
-
-        public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
-        {
-            var validator = new RefreshTokenDtoValidator();
-            var result = await validator.ValidateAsync(refreshTokenDto);
-
-            if (!result.IsValid)
-                throw new ValidationException("Refresh token yangilash uchun yaroqsiz", result.Errors);
-
-            return await _tokenService.RefreshTokenAsync(refreshTokenDto);
-        }
-
         //Todo email html codeni boshqa joydan o'qishligi kerak M:bazadan
         public async Task RegisterAsync(RegisterDto registerDto)
         {
@@ -172,7 +83,6 @@ namespace Messenger.Application.Services.Auth
                 Email = registerDto.Email,
                 PhoneNumber = registerDto.PhoneNumber,
                 LanguageCode = null,
-                ConfirmationCode = confirmationCode,
                 IsEmailConfirmed = false,
                 Salt = salt,
                 PasswordHash = passwordHash,
@@ -265,7 +175,110 @@ namespace Messenger.Application.Services.Auth
             emailBody.Replace("LINK", confirmationLink); // Tasdiqlash linki
             emailBody.Replace("FOYDALANUVCHIISMI", user.FirstName); // Foydalanuvchi ismi
 
+            _memoryCache.Set(
+                key: registerDto.Email,
+                value: confirmationCode,
+                options: new MemoryCacheEntryOptions()
+                    {
+                        AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(3),
+                    }
+                );
+
             await _emailService.SendEmailAsync(user.Email, user.FirstName, "Confirm Your Email", emailBody.ToString());
+        }
+        
+        //Todo Email tasdiqlashda code malum vaqt ichida kiritilishi kerak (masalan: 3:00)
+        public async Task<TokenDto> ConfirmEmailAsync([FromForm]EmailConfirmationDto emailConfirmationDto)
+        {
+            var validator = new EmailConfirmationDtoValidator();
+            var result = await validator.ValidateAsync(emailConfirmationDto);
+
+            if (!result.IsValid)
+                throw new ValidationException("Model email tasdiqlash uchun yaroqsiz", result.Errors);
+
+            var emailConfiramtionCache = _memoryCache.Get(emailConfirmationDto.Email) as string;
+            if (emailConfiramtionCache == null)
+                throw new ValidationException("Kodni yaroqlilik muddati tugagan.");
+
+            if (emailConfiramtionCache != emailConfirmationDto.ConfirmationCode)
+                throw new ValidationException("Tasdiqlash kodi noto'g'ri.");
+
+            var user = await _messengerDbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == emailConfirmationDto.Email);
+
+            if (user is null)
+                throw new NotFoundException("Foydalanuvchi topilmadi.");
+         
+            if(!user.IsEmailConfirmed.HasValue || user.IsEmailConfirmed.Value)
+                throw new Exception("Email allaqachon tasdiqlangan, Login qiling!");
+
+            user.IsEmailConfirmed = true;
+            await _messengerDbContext.SaveChangesAsync();
+
+            return await _tokenService.GenerateTokenAsync(user);
+        }
+
+        public async Task<TokenDto> LoginAsync(LoginDto loginDto)
+        {
+            var validator = new LoginDtoValidator();
+            var result = await validator.ValidateAsync(loginDto);
+
+            if (!result.IsValid)
+                throw new ValidationException("Model login qilish uchun yaroqsiz", result.Errors);
+
+            var user = await _messengerDbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+
+            if (user is null)
+                throw new NotFoundException("Foydalanuvchi topilmadi.");
+
+            if (!user.IsEmailConfirmed.Value)
+                throw new ForbiddenException("Email tasdiqlanmagan.");
+
+            // Parolni tekshirish
+            if (!_passwordHasher.Verify(user.PasswordHash, loginDto.Password, user.Salt))
+                throw new ValidationException("Noto'g'ri parol.");
+
+            user.RefreshToken = Guid.NewGuid().ToString();
+            user.RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30);
+            await _messengerDbContext.SaveChangesAsync();
+
+            return await _tokenService.GenerateTokenAsync(user);
+        }
+
+        public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
+        {
+            var validator = new RefreshTokenDtoValidator();
+            var result = await validator.ValidateAsync(refreshTokenDto);
+
+            if (!result.IsValid)
+                throw new ValidationException("Refresh token yangilash uchun yaroqsiz", result.Errors);
+
+            return await _tokenService.RefreshTokenAsync(refreshTokenDto);
+        }
+
+        public async Task<UserProfile> GetUserProfileAsync()
+        {
+            var userId = _userContextService.GetCurrentUserId();
+
+            var user = await _messengerDbContext.Users
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (user is null)
+                throw new NotFoundException("User topilmadi.");
+
+            return _mapper.Map<UserProfile>(user);
+        }
+
+        public async Task<UserProfile> GetUserProfileAsync(long userId)
+        {
+            var user = await _messengerDbContext.Users
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (user is null)
+                throw new NotFoundException("User topilmadi.");
+
+            return _mapper.Map<UserProfile>(user);
         }
 
         public async Task<UserProfile> UpdateUserProfileAsync(UserProfileModificationDto userProfileModificationDto)
@@ -287,6 +300,7 @@ namespace Messenger.Application.Services.Auth
 
             return _mapper.Map<UserProfile>(entryEntity.Entity);
         }
+
 
         public async Task DeleteUserProfileAsync()
         {
@@ -416,7 +430,7 @@ namespace Messenger.Application.Services.Auth
                 throw new ValidationException("Email xato.");
 
             if (emailConfiramtionCache.ConfirmationCode != emailConfirmationDto.ConfirmationCode)
-                throw new ValidationException("Confirmation code xato");
+                throw new ValidationException("Tasdiqlash kodi noto'g'ri.");
 
             var user = await _messengerDbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == emailConfirmationDto.Email);

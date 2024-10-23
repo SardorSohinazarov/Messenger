@@ -5,19 +5,23 @@ namespace Messenger.Application.Services.Auth
 {
     public interface IAuthService
     {
-        Task<TokenDto> LoginAsync(LoginDto loginDto);
+        #region Login Providerlar
         //Task<TokenDto> LoginWithGoogleAccountAsync(GoogleLoginDto googleLoginDto);
         //Task<TokenDto> LoginWithFacebookAccountAsync(string returnUrl = "/");
         //Task<TokenDto> LoginWithTwitterAccountAsync(string returnUrl = "/");
         //Task<TokenDto> LoginWithMicrosoftAccountAsync(string returnUrl = "/");
         //Task<TokenDto> LoginWithTelegramAccountAsync(string returnUrl = "/");
+        #endregion
 
         Task RegisterAsync(RegisterDto registerDto);
         Task<TokenDto> ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto);
+
+        Task<TokenDto> LoginAsync(LoginDto loginDto);
         Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
         Task<UserProfile> GetUserProfileAsync();
         Task<UserProfile> GetUserProfileAsync(long userId);
         Task<UserProfile> UpdateUserProfileAsync(UserProfileModificationDto userProfileModificationDto);
+
         Task DeleteUserProfileAsync();
         Task<UserProfile> ConfirmDeleteProfileAsync(EmailConfirmationDto emailConfirmationDto);
     }
