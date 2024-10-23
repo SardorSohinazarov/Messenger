@@ -63,11 +63,14 @@ namespace Messenger.Application.Services.Auth
             if (!result.IsValid)
                 throw new ValidationException("Model ro'yhatdan o'tish uchun yaroqsiz",result.Errors);
 
-            var existingUser = await _messengerDbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == registerDto.Email || u.PhoneNumber == registerDto.PhoneNumber);
+            #region Optimallashtirish kerak : Telefon nomer yoki Email yoki UserName band qilinganmi yo'qmi tekshirish kerak 
+            var userNameOrPhoneOrEmailExist = await _messengerDbContext.Users
+                .AnyAsync(x => x.Email == registerDto.Email
+                            || x.PhoneNumber == registerDto.PhoneNumber);
 
-            if (existingUser != null)
-                throw new Exception("Ushbu email yoki phone number allaqachon ro'yxatdan o'tgan.");
+            if (userNameOrPhoneOrEmailExist)
+                throw new ValidationException("Telefon nomer yoki Email allaqachon band qilingan.");
+            #endregion
 
             var confirmationCode = new Random().Next(1000, 9999).ToString();
             var salt = Guid.NewGuid().ToString();
@@ -218,6 +221,7 @@ namespace Messenger.Application.Services.Auth
             return await _tokenService.GenerateTokenAsync(user);
         }
 
+
         public async Task<TokenDto> LoginAsync(LoginDto loginDto)
         {
             var validator = new LoginDtoValidator();
@@ -288,6 +292,16 @@ namespace Messenger.Application.Services.Auth
 
             if (!result.IsValid)
                 throw new ValidationException("Model update qilish uchun yaroqsiz", result.Errors);
+
+            #region Optimallashtirish kerak : Telefon nomer yoki Email yoki UserName band qilinganmi yo'qmi tekshirish kerak 
+            var userNameOrPhoneOrEmailExist = await _messengerDbContext.Users
+                .AnyAsync(x => x.UserName == userProfileModificationDto.UserName
+                            || x.Email == userProfileModificationDto.Email
+                            || x.PhoneNumber == userProfileModificationDto.PhoneNumber);
+
+            if (userNameOrPhoneOrEmailExist)
+                throw new ValidationException("Telefon nomer yoki Email yoki UserName allaqachon band qilingan.");
+            #endregion
 
             var userId = _userContextService.GetCurrentUserId();
 
