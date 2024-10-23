@@ -23,11 +23,7 @@ namespace Messenger.Infrastructure.Persistence
         //message va unga aloqador setlar
         public DbSet<Message> Messages { get; set; }
 
-        //constructorlar
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public MessengerDbContext(IHttpContextAccessor httpContextAccessor) 
-            => _httpContextAccessor = httpContextAccessor;
-
         public MessengerDbContext(
             DbContextOptions<MessengerDbContext> options,
             IHttpContextAccessor httpContextAccessor)

@@ -1,7 +1,6 @@
 ﻿using Messenger.Application.DataTransferObjects.ChatUsers;
 using Messenger.Application.Services.ChatUsers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.Api.Controllers

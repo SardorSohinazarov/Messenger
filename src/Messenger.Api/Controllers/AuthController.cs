@@ -70,6 +70,14 @@ namespace Messenger.Api.Controllers
 
             return Ok(profile);
         }
+        
+        [HttpGet("profile/{id}")]
+        public async Task<IActionResult> GetUserProfileAsync(long id)
+        {
+            var profile = await _authService.GetUserProfileAsync(id);
+
+            return Ok(profile);
+        }
 
         [HttpPut("update-profile")]
         public async Task<IActionResult> UpdateProfileAsync(UserProfileModificationDto userProfileModificationDto)

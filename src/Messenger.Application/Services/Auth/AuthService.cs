@@ -16,7 +16,6 @@ using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
 using AutoMapper;
 using Messenger.Application.Helpers.UserContext;
 using Microsoft.Extensions.Caching.Memory;
-using System.Runtime.Serialization;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -190,7 +189,6 @@ namespace Messenger.Application.Services.Auth
             await _emailService.SendEmailAsync(user.Email, user.FirstName, "Confirm Your Email", emailBody.ToString());
         }
         
-        //Todo Email tasdiqlashda code malum vaqt ichida kiritilishi kerak (masalan: 3:00)
         public async Task<TokenDto> ConfirmEmailAsync([FromForm]EmailConfirmationDto emailConfirmationDto)
         {
             var validator = new EmailConfirmationDtoValidator();
