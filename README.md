@@ -104,15 +104,13 @@ Ilovaning tahminiy tuzilishi quyidagicha:
 |   │   └── ...                              // Boshqa DTO'lar uchun validatsiyalar
 │   └── Application.csproj               // Application loyihasining fayli
 |
-├── /Messenger.Domain                     // Ilovaning domen modeli (entity'lar, interfeyslar, biznes qoidalari)
-│   ├── /Entities                         // Domain modellar (Entity'lar)
-│   │   ├── User.cs                      // Foydalanuvchi modeli
-│   │   ├── Message.cs                   // Xabar modeli
-│   │   └── ...                          // Qo'shimcha domain entity'lar
-│   ├── /Interfaces                       // Domen interfeyslar
-│   │   ├── IUserRepository.cs            // Foydalanuvchilar repository interfeysi
-│   │   ├── IMessageRepository.cs         // Xabarlar repository interfeysi
-│   │   └── ...                          // Qo'shimcha interfeyslar
+├── /Messenger.Domain                        // Ilovaning domen modeli (entity'lar, interfeyslar, biznes qoidalari)
+│   ├── /Entities                            // Domain modellar (Entity'lar)
+|   |   ├── Chat.cs                          // Chat modeli
+│   │   ├── LinkTables.cs                    // Many to Many relationship dagi yordamchi tablelar
+│   │   ├── Message.cs                       // Xabar modeli
+│   │   ├── Update.cs                        // Update modeli
+│   │   └── User.cs                          // Foydalanuvchi modeli
 │   └── Domain.csproj                    // Domain loyihasining fayli
 
 /tests                                   // Testlar (unit va integration testlar)
