@@ -7,6 +7,7 @@ using Messenger.Application.Services.Chats;
 using Messenger.Application.Services.ChatUsers;
 using Messenger.Application.Services.Email;
 using Messenger.Application.Services.Messages;
+using Messenger.Application.Services.Profiles;
 using Messenger.Application.Services.Token;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ namespace Messenger.Application
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IChatUserService, ChatUserService>();
             services.AddScoped<IMessagesService, MessageService>();
+            services.AddScoped<IProfileService, ProfileService>();
 
             //helpers
             services.AddScoped<IPasswordHasher, PasswordHasher>();

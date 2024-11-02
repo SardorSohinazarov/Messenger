@@ -61,46 +61,5 @@ namespace Messenger.Api.Controllers
 
             return Ok(token);
         }
-
-        //profile
-        [HttpGet("profile")]
-        public async Task<IActionResult> GetUserProfileAsync()
-        {
-            var profile = await _authService.GetUserProfileAsync();
-
-            return Ok(profile);
-        }
-        
-        [HttpGet("profile/{id}")]
-        public async Task<IActionResult> GetUserProfileAsync(long id)
-        {
-            var profile = await _authService.GetUserProfileAsync(id);
-
-            return Ok(profile);
-        }
-
-        [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfileAsync(UserProfileModificationDto userProfileModificationDto)
-        {
-            var profile = await _authService.UpdateUserProfileAsync(userProfileModificationDto);
-
-            return Ok(profile);
-        }
-
-        [HttpDelete("delete-profile")]
-        public async Task<IActionResult> DeleteProfileAsync()
-        {
-            await _authService.DeleteUserProfileAsync();
-
-            return Ok();
-        }
-
-        [HttpGet("confirm-delete-profile")]
-        public async Task<IActionResult> ConfirmDeleteProfileAsync([FromQuery] EmailConfirmationDto emailConfirmationDto)
-        {
-            var userProfile = await _authService.ConfirmDeleteProfileAsync(emailConfirmationDto);
-
-            return Ok(userProfile);
-        }
     }
 }
