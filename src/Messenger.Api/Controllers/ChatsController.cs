@@ -42,10 +42,18 @@ namespace Messenger.Api.Controllers
             return Ok(chat);
         }
 
-        [HttpPost("filter")]
-        public async Task<IActionResult> GetChatsAsync(ChatFilter chatFilter)
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchChatsAsync(string key)
         {
-            var chats = await _chatService.GetChatsAsync(chatFilter);
+            var chats = await _chatService.GetChatsAsync(key);
+
+            return Ok(chats);
+        } 
+        
+        [HttpGet]
+        public async Task<IActionResult> GetUserChatsAsync()
+        {
+            var chats = await _chatService.GetUserChatsAsync();
 
             return Ok(chats);
         }
@@ -67,14 +75,14 @@ namespace Messenger.Api.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetChatsAsync()
+        public async Task<IActionResult> GetAllChatsAsync()
         {
             var chats = await _chatService.GetChatsAsync();
 
             return Ok(chats);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:long}")]
         public async Task<IActionResult> GetChatAsync(long id)
         {
             var chat = await _chatService.GetChatAsync(id);
@@ -90,7 +98,7 @@ namespace Messenger.Api.Controllers
             return Ok(chat);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id:long}")]
         public async Task<IActionResult> DeleteChatAsync(long id)
         {
             var chat = await _chatService.DeleteAsync(id);

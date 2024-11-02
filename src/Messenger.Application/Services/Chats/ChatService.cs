@@ -95,7 +95,13 @@ namespace Messenger.Application.Services.Chats
             return _mapper.Map<ChatDetailsViewModel>(chat);
         }
 
-        public async Task<List<ChatViewModel>> GetChatsAsync(ChatFilter filter)
+        public async Task<List<ChatViewModel>> GetChatsAsync(string key)
+        {
+            //TODO: global qidiruv uchun
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<ChatViewModel>> GetUserChatsAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -104,18 +110,16 @@ namespace Messenger.Application.Services.Chats
                 .Include(x => x.Messages)
                 .ThenInclude(x => x.From)
                 .Where(x => x.Users.Select(x => x.UserId).Contains(userId))
-                .Where(x => filter.UserName == null || x.UserName == filter.UserName)
-                .Where(x => filter.ChatType == null || x.Type == filter.ChatType)
                 .Select(x => new ChatViewModel()
                 {
-                        Id = x.Id,
-                        Username = x.UserName,
-                        Type = x.Type,
-                        LastMessage = _mapper.Map<MessageViewModel>(x.Messages.OrderByDescending(x => x.CreatedAt).FirstOrDefault()),
-                        LastName = x.LastName,
-                        Title = x.Title,
-                        FirstName = x.FirstName,
-                        Photo = x.Photo
+                    Id = x.Id,
+                    Username = x.UserName,
+                    Type = x.Type,
+                    LastMessage = _mapper.Map<MessageViewModel>(x.Messages.OrderByDescending(x => x.CreatedAt).FirstOrDefault()),
+                    LastName = x.LastName,
+                    Title = x.Title,
+                    FirstName = x.FirstName,
+                    Photo = x.Photo
                 })
                 .ToListAsync();
 
