@@ -152,7 +152,8 @@ namespace Messenger.Application.Services.Chats
             var userId = _userContextService.GetCurrentUserId();
 
             var ownerChats = await _messengerDbContext.Chats
-                .Where(x => x.CreatedBy == userId)
+                .Where(x => x.CreatedBy == userId
+                         && x.Type != EChatType.Private)
                 .ToListAsync();
 
             return _mapper.Map<List<ChatViewModel>>(ownerChats);
@@ -163,7 +164,9 @@ namespace Messenger.Application.Services.Chats
             var userId = _userContextService.GetCurrentUserId();
 
             var adminChatIds = await _messengerDbContext.ChatUsers
-                .Where(x => x.UserId == userId && x.IsAdmin)
+                .Where(x => x.UserId == userId
+                         && x.Chat.Type != EChatType.Private
+                         && x.IsAdmin)
                 .Select(x => x.ChatId)
                 .ToListAsync();
 

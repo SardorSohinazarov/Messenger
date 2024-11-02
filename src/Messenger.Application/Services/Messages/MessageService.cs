@@ -111,7 +111,7 @@ namespace Messenger.Application.Services.Messages
             if (message is null)
                 throw new NotFoundException("Xabar topilmadi");
 
-            //adminmi
+            //messageni ownerimi
             var userId = _userContextService.GetCurrentUserId();
             
             if(message.FromId != userId)

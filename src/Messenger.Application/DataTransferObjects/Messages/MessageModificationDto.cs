@@ -3,7 +3,6 @@
     public class MessageModificationDto
     {
         public Guid Id { get; set; }                          // Xabar ID
-        public long ChatId { get; set; }                      // Xabar jo'natilgan chat ID
 
         public string Text { get; set; }                      // Xabar matni
         //public Animation Animation { get; set; }            // Xabar bilan birga kelgan animatsiya

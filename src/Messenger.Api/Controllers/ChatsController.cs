@@ -61,7 +61,7 @@ namespace Messenger.Api.Controllers
         [HttpGet("owner")]
         public async Task<IActionResult> GetOwnerChatsAsync()
         {
-            var chats = _chatService.GetOwnerChatsAsync();
+            var chats = await _chatService.GetOwnerChatsAsync();
 
             return Ok(chats);
         }

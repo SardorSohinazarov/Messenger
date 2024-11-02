@@ -234,10 +234,13 @@ namespace Messenger.Application.Services.Auth
             if (user is null)
                 throw new NotFoundException("Foydalanuvchi topilmadi.");
 
+            if (user.LoginProvider != ELoginProvider.Email)
+                throw new NotFoundException($"Siz email tasdiqlash orqali ro'yxatdan o'tmagansiz, " +
+                                            $"{user.LoginProvider} orqali login qiling!");
+
             if (!user.IsEmailConfirmed.Value)
                 throw new ForbiddenException("Email tasdiqlanmagan.");
 
-            // Parolni tekshirish
             if (!_passwordHasher.Verify(user.PasswordHash, loginDto.Password, user.Salt))
                 throw new ValidationException("Noto'g'ri parol.");
 
