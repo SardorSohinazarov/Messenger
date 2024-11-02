@@ -42,10 +42,18 @@ namespace Messenger.Api.Controllers
             return Ok(chat);
         }
 
-        [HttpGet("search")]
+        [HttpGet("search-chats")]
         public async Task<IActionResult> SearchChatsAsync(string key)
         {
-            var chats = await _chatService.GetChatsAsync(key);
+            var chats = await _chatService.SearchChatsAsync(key);
+
+            return Ok(chats);
+        }  
+        
+        [HttpGet("search-users")]
+        public async Task<IActionResult> SearchUsersAsync(string key)
+        {
+            var chats = await _chatService.SearchUsersAsync(key);
 
             return Ok(chats);
         } 

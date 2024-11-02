@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Messenger.Application.DataTransferObjects.Chats;
-using Messenger.Application.DataTransferObjects.Filters;
 using Messenger.Application.DataTransferObjects.Messages;
+using Messenger.Application.DataTransferObjects.Users;
 using Messenger.Application.Helpers.UserContext;
 using Messenger.Application.Validators.Chats;
 using Messenger.Domain.Entities;
@@ -95,10 +95,34 @@ namespace Messenger.Application.Services.Chats
             return _mapper.Map<ChatDetailsViewModel>(chat);
         }
 
-        public async Task<List<ChatViewModel>> GetChatsAsync(string key)
+        public async Task<List<ChatViewModel>> SearchChatsAsync(string key)
         {
-            //TODO: global qidiruv uchun
-            throw new NotImplementedException();
+            /// Todo: Lower Upperga farqlamas
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
+
+            var chats = await _messengerDbContext.Chats
+                .Where(x => x.Type != EChatType.Private)
+                .Where(x => x.Title == null || x.Title == key)
+                .ToListAsync();
+
+            return _mapper.Map<List<ChatViewModel>>(chats);
+        }
+
+        public async Task<List<UserViewModel>> SearchUsersAsync(string key)
+        {
+            /// Todo: Lower Upperga farqlamas
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
+
+            var users = await _messengerDbContext.Users
+                .Where(x => x.FirstName == null || x.FirstName == key)
+                .Where(x => x.LastName == null || x.LastName == key)
+                .Where(x => x.UserName == null || x.UserName == key)
+                .Where(x => x.Email == null || x.Email == key)
+                .ToListAsync();
+
+            return _mapper.Map<List<UserViewModel>>(users);
         }
 
         public async Task<List<ChatViewModel>> GetUserChatsAsync()
