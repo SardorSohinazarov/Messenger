@@ -100,11 +100,12 @@ namespace Messenger.Application.Services.Chats
             if (string.IsNullOrWhiteSpace(key))
                 throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
 
-            key = key.ToLower();
+            key = $"%{key}%";
 
             var chats = await _messengerDbContext.Chats
-                .Where(x => x.Type != EChatType.Private)
-                .Where(x => x.Title == null || x.Title.ToLower().Contains(key))
+                .AsNoTracking()
+                .Where(x => x.Type != EChatType.Private 
+                         && EF.Functions.Like(x.Title, key))
                 .ToListAsync();
 
             return _mapper.Map<List<ChatViewModel>>(chats);
@@ -115,13 +116,14 @@ namespace Messenger.Application.Services.Chats
             if (string.IsNullOrWhiteSpace(key))
                 throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
 
-            key = key.ToLower();
+            key = $"%{key}%";
 
             var users = await _messengerDbContext.Users
-                .Where(x => (x.FirstName != null && x.FirstName.ToLower().Contains(key)) 
-                         || (x.LastName != null && x.LastName.ToLower().Contains(key))
-                         || (x.UserName != null && x.UserName.ToLower().Contains(key))
-                         || (x.Email != null && x.Email.ToLower().Contains(key))
+                .AsNoTracking()
+                .Where(x => EF.Functions.Like(x.FirstName, key)
+                         || EF.Functions.Like(x.LastName, key)
+                         || EF.Functions.Like(x.UserName, key)
+                         || EF.Functions.Like(x.Email, key)
                 ).ToListAsync();
 
             return _mapper.Map<List<UserViewModel>>(users);
