@@ -1,10 +1,7 @@
 ﻿using Messenger.Application.DataTransferObjects.Chats;
-using Messenger.Application.DataTransferObjects.Filters;
 using Messenger.Application.Services.Chats;
-using Messenger.Infrastructure.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.AccessControl;
 
 namespace Messenger.Api.Controllers
 {
@@ -56,7 +53,7 @@ namespace Messenger.Api.Controllers
             var chats = await _chatService.SearchUsersAsync(key);
 
             return Ok(chats);
-        } 
+        }
         
         [HttpGet]
         public async Task<IActionResult> GetUserChatsAsync()

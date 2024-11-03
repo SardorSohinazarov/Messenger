@@ -97,13 +97,14 @@ namespace Messenger.Application.Services.Chats
 
         public async Task<List<ChatViewModel>> SearchChatsAsync(string key)
         {
-            /// Todo: Lower Upperga farqlamas
             if (string.IsNullOrWhiteSpace(key))
                 throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
 
+            key = key.ToLower();
+
             var chats = await _messengerDbContext.Chats
                 .Where(x => x.Type != EChatType.Private)
-                .Where(x => x.Title == null || x.Title == key)
+                .Where(x => x.Title == null || x.Title.ToLower().Contains(key))
                 .ToListAsync();
 
             return _mapper.Map<List<ChatViewModel>>(chats);
@@ -111,16 +112,17 @@ namespace Messenger.Application.Services.Chats
 
         public async Task<List<UserViewModel>> SearchUsersAsync(string key)
         {
-            /// Todo: Lower Upperga farqlamas
             if (string.IsNullOrWhiteSpace(key))
                 throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
 
+            key = key.ToLower();
+
             var users = await _messengerDbContext.Users
-                .Where(x => x.FirstName == null || x.FirstName == key)
-                .Where(x => x.LastName == null || x.LastName == key)
-                .Where(x => x.UserName == null || x.UserName == key)
-                .Where(x => x.Email == null || x.Email == key)
-                .ToListAsync();
+                .Where(x => (x.FirstName != null && x.FirstName.ToLower().Contains(key)) 
+                         || (x.LastName != null && x.LastName.ToLower().Contains(key))
+                         || (x.UserName != null && x.UserName.ToLower().Contains(key))
+                         || (x.Email != null && x.Email.ToLower().Contains(key))
+                ).ToListAsync();
 
             return _mapper.Map<List<UserViewModel>>(users);
         }
