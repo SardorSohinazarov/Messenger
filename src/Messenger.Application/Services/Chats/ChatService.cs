@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Messenger.Application.Common.Results;
 using Messenger.Application.DataTransferObjects.Chats;
 using Messenger.Application.DataTransferObjects.Messages;
 using Messenger.Application.DataTransferObjects.Users;
@@ -34,25 +35,27 @@ namespace Messenger.Application.Services.Chats
             _userContextService = userContextService;
         }
 
-        public async Task<ChatDetailsViewModel> CreateChannelAsync(ChannelCreationDto channelCreationDto)
+        public async Task<Result<ChatDetailsViewModel>> CreateChannelAsync(ChannelCreationDto channelCreationDto)
         {
             //validatsiya
             var chat = _mapper.Map<Chat>(channelCreationDto);
             chat.Type = EChatType.Channel;
 
-            return await CreateChatAsync(chat);
+            var createdChat = await CreateChatAsync(chat);
+            return Result<ChatDetailsViewModel>.Success(createdChat);
         }
 
-        public async Task<ChatDetailsViewModel> CreateGroupAsync(GroupCreationDto groupCreationDto)
+        public async Task<Result<ChatDetailsViewModel>> CreateGroupAsync(GroupCreationDto groupCreationDto)
         {
             //validatsiya
             var chat = _mapper.Map<Chat>(groupCreationDto);
             chat.Type = EChatType.Group;
 
-            return await CreateChatAsync(chat);
+            var createdChat = await CreateChatAsync(chat);
+            return Result<ChatDetailsViewModel>.Success(createdChat);
         }
 
-        public async Task<ChatDetailsViewModel> GetOrCreatePrivateChatAsync(long userId)
+        public async Task<Result<ChatDetailsViewModel>> GetOrCreatePrivateChatAsync(long userId)
         {
             var currentUserId = _userContextService.GetCurrentUserId();
 
@@ -63,7 +66,7 @@ namespace Messenger.Application.Services.Chats
                                        && c.Users.Any(u => u.UserId == userId));
 
             if (existingChat is not null)
-                return _mapper.Map<ChatDetailsViewModel>(existingChat);
+                return Result<ChatDetailsViewModel>.Success(_mapper.Map<ChatDetailsViewModel>(existingChat));
 
             // Yangi chat yaratamiz
             var newChat = new Chat
@@ -79,10 +82,11 @@ namespace Messenger.Application.Services.Chats
             var entryEntity = await _messengerDbContext.AddAsync(newChat);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
+            var chatDetailsViewModel = _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
+            return Result<ChatDetailsViewModel>.Success(chatDetailsViewModel);
         }
 
-        public async Task<ChatDetailsViewModel> GetChatAsync(long id)
+        public async Task<Result<ChatDetailsViewModel>> GetChatAsync(long id)
         {
             var chat = await _messengerDbContext.Chats
                 .Include(x => x.Users)
@@ -92,10 +96,11 @@ namespace Messenger.Application.Services.Chats
             if(chat is null)
                 throw new NotFoundException("Chat topilmadi");
 
-            return _mapper.Map<ChatDetailsViewModel>(chat);
+            var chatDetailsViewModel = _mapper.Map<ChatDetailsViewModel>(chat);
+            return Result<ChatDetailsViewModel>.Success(chatDetailsViewModel);
         }
 
-        public async Task<List<ChatViewModel>> SearchChatsAsync(string key)
+        public async Task<Result<List<ChatViewModel>>> SearchChatsAsync(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
@@ -108,10 +113,11 @@ namespace Messenger.Application.Services.Chats
                          && EF.Functions.Like(x.Title, key))
                 .ToListAsync();
 
-            return _mapper.Map<List<ChatViewModel>>(chats);
+            var chatViewModels = _mapper.Map<List<ChatViewModel>>(chats);
+            return Result<List<ChatViewModel>>.Success(chatViewModels);
         }
 
-        public async Task<List<UserViewModel>> SearchUsersAsync(string key)
+        public async Task<Result<List<UserViewModel>>> SearchUsersAsync(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
@@ -126,10 +132,11 @@ namespace Messenger.Application.Services.Chats
                          || EF.Functions.Like(x.Email, key)
                 ).ToListAsync();
 
-            return _mapper.Map<List<UserViewModel>>(users);
+            var userViewModels = _mapper.Map<List<UserViewModel>>(users);
+            return Result<List<UserViewModel>>.Success(userViewModels);
         }
 
-        public async Task<List<ChatViewModel>> GetUserChatsAsync()
+        public async Task<Result<List<ChatViewModel>>> GetUserChatsAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -176,10 +183,10 @@ namespace Messenger.Application.Services.Chats
                 return x;
             }).ToList();
 
-            return chats;
+            return Result<List<ChatViewModel>>.Success(chats);
         }
 
-        public async Task<List<ChatViewModel>> GetOwnerChatsAsync()
+        public async Task<Result<List<ChatViewModel>>> GetOwnerChatsAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -188,10 +195,11 @@ namespace Messenger.Application.Services.Chats
                          && x.Type != EChatType.Private)
                 .ToListAsync();
 
-            return _mapper.Map<List<ChatViewModel>>(ownerChats);
+            var chatViewModels = _mapper.Map<List<ChatViewModel>>(ownerChats);
+            return Result<List<ChatViewModel>>.Success(chatViewModels);
         }
 
-        public async Task<List<ChatViewModel>> GetAdminChatsAsync()
+        public async Task<Result<List<ChatViewModel>>> GetAdminChatsAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -206,10 +214,11 @@ namespace Messenger.Application.Services.Chats
                 .Where(x => adminChatIds.Contains(x.Id))
                 .ToListAsync();
 
-            return _mapper.Map<List<ChatViewModel>>(adminChats);
+            var chatViewModels = _mapper.Map<List<ChatViewModel>>(adminChats);
+            return Result<List<ChatViewModel>>.Success(chatViewModels);
         }
 
-        public async Task<ChatDetailsViewModel> UpdateChatAsync(ChatModificationDto chatModificationDto)
+        public async Task<Result<ChatDetailsViewModel>> UpdateChatAsync(ChatModificationDto chatModificationDto)
         {
             var validator = new ChatModificationDtoValidator();
             var validationResult = await validator.ValidateAsync(chatModificationDto);
@@ -230,10 +239,11 @@ namespace Messenger.Application.Services.Chats
             var entryEntity = _messengerDbContext.Chats.Update(chat);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
+            var chatDetailsViewModel = _mapper.Map<ChatDetailsViewModel>(entryEntity.Entity);
+            return Result<ChatDetailsViewModel>.Success(chatDetailsViewModel);
         }
         
-        public async Task<ChatViewModel> DeleteAsync(long id)
+        public async Task<Result<ChatViewModel>> DeleteAsync(long id)
         {
             //adminmi
             var chat = await _messengerDbContext.Chats
@@ -251,11 +261,15 @@ namespace Messenger.Application.Services.Chats
             var entryEntity = _messengerDbContext.Chats.Remove(chat);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<ChatViewModel>(chat);
+            var chatViewModel = _mapper.Map<ChatViewModel>(chat);
+            return Result<ChatViewModel>.Success(chatViewModel);
         }
 
-        public async Task<List<Chat>> GetChatsAsync()
-            => await _messengerDbContext.Chats.ToListAsync(); // admin panel sifatida
+        public async Task<Result<List<Chat>>> GetChatsAsync()
+        {
+            var chats = await _messengerDbContext.Chats.ToListAsync(); // admin panel sifatida
+            return Result<List<Chat>>.Success(chats);
+        }
 
         private async Task<ChatDetailsViewModel> CreateChatAsync(Chat chat)
         {

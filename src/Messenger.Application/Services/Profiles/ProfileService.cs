@@ -233,7 +233,7 @@ namespace Messenger.Application.Services.Profiles
             var entryEntity = _messengerDbContext.Users.Remove(user);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<UserProfile>(entryEntity);
+            return _mapper.Map<UserProfile>(entryEntity.Entity);
         }
     }
 }

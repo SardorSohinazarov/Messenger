@@ -8,6 +8,10 @@ namespace Messenger.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Chat> builder)
         {
+            builder
+                .HasIndex(x => x.UserName)
+                .IsUnique();
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }

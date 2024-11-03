@@ -3,6 +3,7 @@ using Messenger.Application;
 using Messenger.Api.Extensions;
 using Messenger.Application.DataTransferObjects.CommonOptions;
 using System.Text.Json.Serialization;
+using Messenger.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
