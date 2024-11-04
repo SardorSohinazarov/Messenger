@@ -12,9 +12,8 @@ using System.Text;
 using ValidationException = FluentValidation.ValidationException;
 using Messenger.Application.Validators.Auth;
 using Messenger.Domain.Enums;
-using AutoMapper;
-using Messenger.Application.Helpers.UserContext;
 using Microsoft.Extensions.Caching.Memory;
+using Messenger.Application.Common.Results;
 
 namespace Messenger.Application.Services.Auth
 {
@@ -44,7 +43,7 @@ namespace Messenger.Application.Services.Auth
         }
 
         //Todo email html codeni boshqa joydan o'qishligi kerak M:bazadan
-        public async Task RegisterAsync(RegisterDto registerDto)
+        public async Task<Result> RegisterAsync(RegisterDto registerDto)
         {
             var validator = new RegisterDtoValidator();
             var result = await validator.ValidateAsync(registerDto);
@@ -177,9 +176,11 @@ namespace Messenger.Application.Services.Auth
                 );
 
             await _emailService.SendEmailAsync(user.Email, user.FirstName, "Confirm Your Email", emailBody.ToString());
+
+            return Result.Success("Emailga code jo'natildi.");
         }
         
-        public async Task<TokenDto> ConfirmEmailAsync([FromForm]EmailConfirmationDto emailConfirmationDto)
+        public async Task<Result<TokenDto>> ConfirmEmailAsync([FromForm]EmailConfirmationDto emailConfirmationDto)
         {
             var validator = new EmailConfirmationDtoValidator();
             var result = await validator.ValidateAsync(emailConfirmationDto);
@@ -206,11 +207,13 @@ namespace Messenger.Application.Services.Auth
             user.IsEmailConfirmed = true;
             await _messengerDbContext.SaveChangesAsync();
 
-            return await _tokenService.GenerateTokenAsync(user);
+            var token = await _tokenService.GenerateTokenAsync(user);
+
+            return Result<TokenDto>.Success(token);
         }
 
 
-        public async Task<TokenDto> LoginAsync(LoginDto loginDto)
+        public async Task<Result<TokenDto>> LoginAsync(LoginDto loginDto)
         {
             var validator = new LoginDtoValidator();
             var result = await validator.ValidateAsync(loginDto);
@@ -238,10 +241,12 @@ namespace Messenger.Application.Services.Auth
             user.RefreshTokenExpireDate = DateTime.UtcNow.AddDays(30);
             await _messengerDbContext.SaveChangesAsync();
 
-            return await _tokenService.GenerateTokenAsync(user);
+            var token = await _tokenService.GenerateTokenAsync(user);
+
+            return Result<TokenDto>.Success(token);
         }
 
-        public async Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
+        public async Task<Result<TokenDto>> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
         {
             var validator = new RefreshTokenDtoValidator();
             var result = await validator.ValidateAsync(refreshTokenDto);
@@ -249,7 +254,9 @@ namespace Messenger.Application.Services.Auth
             if (!result.IsValid)
                 throw new ValidationException("Refresh token yangilash uchun yaroqsiz", result.Errors);
 
-            return await _tokenService.RefreshTokenAsync(refreshTokenDto);
+            var refreshToken = await _tokenService.RefreshTokenAsync(refreshTokenDto);
+
+            return Result<TokenDto>.Success(refreshToken);
         }
     }
 }

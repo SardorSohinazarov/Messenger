@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Messenger.Application.Common.Results;
 using Messenger.Application.DataTransferObjects.Messages;
 using Messenger.Application.Helpers.UserContext;
 using Messenger.Application.Validators.Messages;
@@ -27,7 +28,7 @@ namespace Messenger.Application.Services.Messages
             _mapper = mapper;
         }
 
-        public async Task<MessageViewModel> CreateMessageAsync(MessageCreationDto messageCreationDto)
+        public async Task<Result<MessageViewModel>> CreateMessageAsync(MessageCreationDto messageCreationDto)
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -48,10 +49,11 @@ namespace Messenger.Application.Services.Messages
             var entityEntry = await _messengerDbContext.AddAsync(message);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<MessageViewModel>(entityEntry.Entity);
+            var messageViewModel = _mapper.Map<MessageViewModel>(entityEntry.Entity);
+            return Result<MessageViewModel>.Success(messageViewModel);
         }
 
-        public async Task<MessageViewModel> DeleteMessageAsync(Guid id)
+        public async Task<Result<MessageViewModel>> DeleteMessageAsync(Guid id)
         {
             var message = await _messengerDbContext.Messages
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -73,13 +75,14 @@ namespace Messenger.Application.Services.Messages
                 var entryEntity = _messengerDbContext.Messages.Remove(message);
                 await _messengerDbContext.SaveChangesAsync();
 
-                return _mapper.Map<MessageViewModel>(entryEntity.Entity);
+                var messageViewModel = _mapper.Map<MessageViewModel>(entryEntity.Entity);
+                return Result<MessageViewModel>.Success(messageViewModel);
             }
 
             throw new ForbiddenException("Xabarni o'chirishga ruxsat yo'q.");
         }
 
-        public async Task<MessageViewModel> GetMessageByIdAsync(Guid id)
+        public async Task<Result<MessageViewModel>> GetMessageByIdAsync(Guid id)
         {
             var message = await _messengerDbContext.Messages
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -87,23 +90,29 @@ namespace Messenger.Application.Services.Messages
             if (message is null)
                 throw new NotFoundException("Xabar topilmadi");
 
-            return _mapper.Map<MessageViewModel>(message);
+            var messageViewModel = _mapper.Map<MessageViewModel>(message);
+            return Result<MessageViewModel>.Success(messageViewModel);
         }
 
-        public async Task<List<Message>> GetMessagesAsync() 
-            => await _messengerDbContext.Messages.ToListAsync();
+        public async Task<Result<List<Message>>> GetMessagesAsync()
+        {
+            var messages = await _messengerDbContext.Messages.ToListAsync();
 
-        public async Task<List<MessageViewModel>> GetMessagesAsync(long chatId)
+            return Result<List<Message>>.Success(messages);
+        }
+
+        public async Task<Result<List<MessageViewModel>>> GetMessagesAsync(long chatId)
         {
             var messages = await _messengerDbContext.Messages
                 .Include(x => x.From)
                 .Where(x => x.ChatId == chatId)
                 .ToListAsync();
 
-            return _mapper.Map<List<MessageViewModel>>(messages);
+            var messageViewModels = _mapper.Map<List<MessageViewModel>>(messages);
+            return Result<List<MessageViewModel>>.Success(messageViewModels);
         }
 
-        public async Task<MessageViewModel> UpdateMessageAsync(MessageModificationDto messageModificationDto)
+        public async Task<Result<MessageViewModel>> UpdateMessageAsync(MessageModificationDto messageModificationDto)
         {
             var message = await _messengerDbContext.Messages
                 .FirstOrDefaultAsync(x => x.Id == messageModificationDto.Id);
@@ -127,7 +136,8 @@ namespace Messenger.Application.Services.Messages
             var entryEntity = _messengerDbContext.Messages.Update(message);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<MessageViewModel>(entryEntity.Entity);
+            var messageViewModel = _mapper.Map<MessageViewModel>(entryEntity.Entity);
+            return Result<MessageViewModel>.Success(messageViewModel);
         }
     }
 }

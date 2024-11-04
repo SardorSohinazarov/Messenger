@@ -6,12 +6,12 @@ using System.Text;
 using AutoMapper;
 using Messenger.Application.Helpers.UserContext;
 using Messenger.Application.Services.Email;
-using Messenger.Application.Services.Token;
 using Messenger.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ValidationException = FluentValidation.ValidationException;
 using Messenger.Domain.Exceptions;
+using Messenger.Application.Common.Results;
 
 namespace Messenger.Application.Services.Profiles
 {
@@ -39,7 +39,7 @@ namespace Messenger.Application.Services.Profiles
             _mapper = mapper;
             _memoryCache = memoryCache;
         }
-        public async Task<UserProfile> GetUserProfileAsync()
+        public async Task<Result<UserProfile>> GetUserProfileAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -49,10 +49,11 @@ namespace Messenger.Application.Services.Profiles
             if (user is null)
                 throw new NotFoundException("User topilmadi.");
 
-            return _mapper.Map<UserProfile>(user);
+            var userProfile = _mapper.Map<UserProfile>(user);
+            return Result<UserProfile>.Success(userProfile);
         }
 
-        public async Task<UserProfile> GetUserProfileAsync(long userId)
+        public async Task<Result<UserProfile>> GetUserProfileAsync(long userId)
         {
             var user = await _messengerDbContext.Users
                 .FirstOrDefaultAsync(x => x.Id == userId);
@@ -60,10 +61,11 @@ namespace Messenger.Application.Services.Profiles
             if (user is null)
                 throw new NotFoundException("User topilmadi.");
 
-            return _mapper.Map<UserProfile>(user);
+            var userProfile = _mapper.Map<UserProfile>(user);
+            return Result<UserProfile>.Success(userProfile);
         }
 
-        public async Task<UserProfile> UpdateUserProfileAsync(UserProfileModificationDto userProfileModificationDto)
+        public async Task<Result<UserProfile>> UpdateUserProfileAsync(UserProfileModificationDto userProfileModificationDto)
         {
             var validator = new UserProfileModificationDtoValidator();
             var result = await validator.ValidateAsync(userProfileModificationDto);
@@ -90,11 +92,12 @@ namespace Messenger.Application.Services.Profiles
             var entryEntity = _messengerDbContext.Users.Update(user);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<UserProfile>(entryEntity.Entity);
+            var userProfile = _mapper.Map<UserProfile>(entryEntity.Entity);
+            return Result<UserProfile>.Success(userProfile);
         }
 
 
-        public async Task DeleteUserProfileAsync()
+        public async Task<Result> DeleteUserProfileAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -201,10 +204,12 @@ namespace Messenger.Application.Services.Profiles
                 );
 
             await _emailService.SendEmailAsync(user.Email, user.FirstName, "Confirm Delete Account", emailBody.ToString());
+
+            return Result.Success("Code emailga jo'natildi.");
         }
 
         //Todo email html codeni boshqa joydan o'qishligi kerak M:bazadan
-        public async Task<UserProfile> ConfirmDeleteProfileAsync(EmailConfirmationDto emailConfirmationDto)
+        public async Task<Result<UserProfile>> ConfirmDeleteProfileAsync(EmailConfirmationDto emailConfirmationDto)
         {
             var validator = new EmailConfirmationDtoValidator();
             var result = await validator.ValidateAsync(emailConfirmationDto);
@@ -233,7 +238,8 @@ namespace Messenger.Application.Services.Profiles
             var entryEntity = _messengerDbContext.Users.Remove(user);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<UserProfile>(entryEntity.Entity);
+            var userProfile = _mapper.Map<UserProfile>(entryEntity.Entity);
+            return Result<UserProfile>.Success(userProfile);
         }
     }
 }

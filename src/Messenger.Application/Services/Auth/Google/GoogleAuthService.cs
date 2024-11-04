@@ -1,4 +1,5 @@
-﻿using Messenger.Application.DataTransferObjects.Auth;
+﻿using Messenger.Application.Common.Results;
+using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Application.DataTransferObjects.Auth.Google;
 using Messenger.Application.DataTransferObjects.CommonOptions;
 using Messenger.Application.Helpers.PasswordHasher;
@@ -37,7 +38,7 @@ namespace Messenger.Application.Services.Auth.Google
             _tokenService = tokenService;
         }
 
-        public async Task<TokenDto> SignAsync(GoogleLoginDto googleLoginDto)
+        public async Task<Result<TokenDto>> SignAsync(GoogleLoginDto googleLoginDto)
         {
             Payload payload = new();
 
@@ -58,12 +59,21 @@ namespace Messenger.Application.Services.Auth.Google
                 .FirstOrDefaultAsync(u => u.Email == payload.Email);
 
             if(existingUser is not null)
-                return await _tokenService.GenerateTokenAsync(existingUser);
+            {
+                TokenDto token1 = await _tokenService.GenerateTokenAsync(existingUser);
+                return Result<TokenDto>.Success(token1);
+            }
 
-            var refreshToken = Guid.NewGuid().ToString();
-            var userName = payload.Email.Substring(0,payload.Email.Length - 10); // Username uchun emaildan qirqib olamiz
-                                                                               // ( email: sardorstudent0618@gmail.com -> username: sardorstudent0618)
-            var user = new User()
+            var user = await CreateNewUserAsync(payload);
+
+            var token = await _tokenService.GenerateTokenAsync(user);
+            return Result<TokenDto>.Success(token);
+        }
+
+        private async Task<User> CreateNewUserAsync(Payload payload)
+        {
+            var userName = payload.Email.Substring(0, payload.Email.IndexOf('@'));
+            var user = new User
             {
                 FirstName = payload.GivenName,
                 LastName = payload.FamilyName,
@@ -71,15 +81,14 @@ namespace Messenger.Application.Services.Auth.Google
                 //ProfilePicture = payload.Picture,
                 //LoginProviderSubject = payload.Subject,
                 UserName = userName,
-                RefreshTokenExpireDate = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
                 RefreshToken = Guid.NewGuid().ToString(),
+                RefreshTokenExpireDate = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
                 LoginProvider = ELoginProvider.Google
             };
 
             var entityEntry = await _messengerDbContext.Users.AddAsync(user);
             await _messengerDbContext.SaveChangesAsync();
-
-            return await _tokenService.GenerateTokenAsync(entityEntry.Entity);
+            return entityEntry.Entity;
         }
     }
 }

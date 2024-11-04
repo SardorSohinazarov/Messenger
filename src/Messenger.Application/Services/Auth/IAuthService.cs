@@ -1,4 +1,5 @@
-﻿using Messenger.Application.DataTransferObjects.Auth;
+﻿using Messenger.Application.Common.Results;
+using Messenger.Application.DataTransferObjects.Auth;
 using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
 
 namespace Messenger.Application.Services.Auth
@@ -13,10 +14,10 @@ namespace Messenger.Application.Services.Auth
         //Task<TokenDto> LoginWithTelegramAccountAsync(string returnUrl = "/");
         #endregion
 
-        Task RegisterAsync(RegisterDto registerDto);
-        Task<TokenDto> ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto);
+        Task<Result> RegisterAsync(RegisterDto registerDto);
+        Task<Result<TokenDto>> ConfirmEmailAsync(EmailConfirmationDto emailConfirmationDto);
 
-        Task<TokenDto> LoginAsync(LoginDto loginDto);
-        Task<TokenDto> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
+        Task<Result<TokenDto>> LoginAsync(LoginDto loginDto);
+        Task<Result<TokenDto>> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
     }
 }

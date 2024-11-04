@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using FluentValidation;
+using Messenger.Application.Common.Results;
 using Messenger.Application.DataTransferObjects.Chats;
 using Messenger.Application.DataTransferObjects.ChatUsers;
 using Messenger.Application.Helpers.UserContext;
@@ -30,7 +32,7 @@ namespace Messenger.Application.Services.ChatUsers
             _userContextService = userContextService;
         }
 
-        public async Task<ChatDetailsViewModel> JoinChatAsync(long id)
+        public async Task<Result<ChatDetailsViewModel>> JoinChatAsync(long id)
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -44,7 +46,10 @@ namespace Messenger.Application.Services.ChatUsers
                 if (chatUser.IsBlocked)
                     throw new ForbiddenException("Siz bloklangansiz.");
                 else
-                    return _mapper.Map<ChatDetailsViewModel>(chatUser.Chat);
+                {
+                    var chatDetailsViewModel1 = _mapper.Map<ChatDetailsViewModel>(chatUser.Chat);
+                    return Result<ChatDetailsViewModel>.Success(chatDetailsViewModel1);
+                }
             }
 
             var chat = await _messengerDbContext.Chats
@@ -65,10 +70,11 @@ namespace Messenger.Application.Services.ChatUsers
             await _messengerDbContext.ChatUsers.AddAsync(chatUser);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<ChatDetailsViewModel>(chat);
+            var chatDetailsViewModel = _mapper.Map<ChatDetailsViewModel>(chat);
+            return Result<ChatDetailsViewModel>.Success(chatDetailsViewModel);
         }
 
-        public async Task<ChatDetailsViewModel> JoinChatAsync(string link)
+        public async Task<Result<ChatDetailsViewModel>> JoinChatAsync(string link)
         {
             var chatLink = await _messengerDbContext.ChatInviteLinks
                 .FirstOrDefaultAsync(x => x.InviteLink == link);
@@ -106,10 +112,11 @@ namespace Messenger.Application.Services.ChatUsers
             if (chatUser.IsBlocked)
                 throw new ValidationException("Siz bloklangansiz.");
 
-            return _mapper.Map<ChatDetailsViewModel>(chat);
+            var chatDetailsViewModel = _mapper.Map<ChatDetailsViewModel>(chat);
+            return Result<ChatDetailsViewModel>.Success(chatDetailsViewModel);
         }
 
-        public async Task<ChatDetailsViewModel> BlokChatUserAsync(ChatUserDto chatUserDto)
+        public async Task<Result<ChatDetailsViewModel>> BlokChatUserAsync(ChatUserDto chatUserDto)
         {
             //adminligini tekshirish kerak
             var userId = _userContextService.GetCurrentUserId();
@@ -132,10 +139,11 @@ namespace Messenger.Application.Services.ChatUsers
             chatUser.IsBlocked = true;
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<ChatDetailsViewModel>(chatUser.Chat);
+            var chatDetailsViewModel = _mapper.Map<ChatDetailsViewModel>(chatUser.Chat);
+            return Result<ChatDetailsViewModel>.Success(chatDetailsViewModel);
         }
 
-        public async Task LeaveChatAsync(long chatId)
+        public async Task<Result> LeaveChatAsync(long chatId)
         {
             var userId = _userContextService.GetCurrentUserId();
 
@@ -147,9 +155,11 @@ namespace Messenger.Application.Services.ChatUsers
 
             _messengerDbContext.ChatUsers.Remove(chatUser);
             await _messengerDbContext.SaveChangesAsync();
+
+            return Result.Success();
         }
 
-        public async Task<ChatDetailsViewModel> UnBlokChatUserAsync(ChatUserDto chatUserDto)
+        public async Task<Result<ChatDetailsViewModel>> UnBlokChatUserAsync(ChatUserDto chatUserDto)
         {
             //adminligini tekshirish kerak
             var userId = _userContextService.GetCurrentUserId();
@@ -172,10 +182,11 @@ namespace Messenger.Application.Services.ChatUsers
             chatUser.IsBlocked = false;
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<ChatDetailsViewModel>(chatUser.Chat);
+            var chatDetailsViewModel = _mapper.Map<ChatDetailsViewModel>(chatUser.Chat);
+            return Result<ChatDetailsViewModel>.Success(chatDetailsViewModel);
         }
 
-        public async Task<ChatInviteLinkViewModel> CreateChatInviteLinkAsync(long chatId)
+        public async Task<Result<ChatInviteLinkViewModel>> CreateChatInviteLinkAsync(long chatId)
         {
             var chat = await _messengerDbContext.Chats
                 .FirstOrDefaultAsync(x => x.Id == chatId
@@ -197,7 +208,8 @@ namespace Messenger.Application.Services.ChatUsers
             var entryEntity = await _messengerDbContext.AddAsync(chatLink);
             await _messengerDbContext.SaveChangesAsync();
 
-            return _mapper.Map<ChatInviteLinkViewModel>(entryEntity.Entity);
+            var chatInviteLinkViewModel = _mapper.Map<ChatInviteLinkViewModel>(entryEntity.Entity);
+            return Result<ChatInviteLinkViewModel>.Success(chatInviteLinkViewModel);
         }
     }
 }
