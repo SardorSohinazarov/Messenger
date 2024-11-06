@@ -1,7 +1,7 @@
-﻿using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
-using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.Services.Profiles;
+﻿using Messenger.Application.Services.Profiles;
 using Microsoft.AspNetCore.Mvc;
+using Messenger.Application.Models.DataTransferObjects.Auth;
+using Messenger.Application.Models.DataTransferObjects.Auth.UserProfiles;
 
 namespace Messenger.Api.Controllers
 {

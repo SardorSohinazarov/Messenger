@@ -1,9 +1,9 @@
 using Messenger.Infrastructure;
 using Messenger.Application;
 using Messenger.Api.Extensions;
-using Messenger.Application.DataTransferObjects.CommonOptions;
 using System.Text.Json.Serialization;
 using Messenger.Api.Middlewares;
+using Messenger.Application.Models.DataTransferObjects.CommonOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 

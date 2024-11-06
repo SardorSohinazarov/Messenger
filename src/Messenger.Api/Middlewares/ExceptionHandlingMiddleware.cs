@@ -1,4 +1,4 @@
-﻿using Messenger.Application.Common.Results;
+﻿using Messenger.Application.Models.Results;
 using Messenger.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;

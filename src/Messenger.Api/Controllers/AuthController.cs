@@ -1,5 +1,5 @@
-﻿using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.DataTransferObjects.Auth.Google;
+﻿using Messenger.Application.Models.DataTransferObjects.Auth;
+using Messenger.Application.Models.DataTransferObjects.Auth.Google;
 using Messenger.Application.Services.Auth;
 using Messenger.Application.Services.Auth.Google;
 using Microsoft.AspNetCore.Mvc;

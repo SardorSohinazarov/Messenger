@@ -1,4 +1,4 @@
-﻿using Messenger.Application.DataTransferObjects.ChatUsers;
+﻿using Messenger.Application.Models.DataTransferObjects.ChatUsers;
 using Messenger.Application.Services.ChatUsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
