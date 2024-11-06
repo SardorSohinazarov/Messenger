@@ -1,6 +1,6 @@
-﻿using Messenger.Application.Common.Results;
-using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.DataTransferObjects.Auth.Google;
+﻿using Messenger.Application.Models.DataTransferObjects.Auth;
+using Messenger.Application.Models.DataTransferObjects.Auth.Google;
+using Messenger.Application.Models.Results;
 
 namespace Messenger.Application.Services.Auth.Google
 {

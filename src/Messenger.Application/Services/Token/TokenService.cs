@@ -1,5 +1,5 @@
-﻿using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.DataTransferObjects.CommonOptions;
+﻿using Messenger.Application.Models.DataTransferObjects.Auth;
+using Messenger.Application.Models.DataTransferObjects.CommonOptions;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Messenger.Application.Common.Results;
-using Messenger.Application.DataTransferObjects.Messages;
 using Messenger.Application.Helpers.UserContext;
+using Messenger.Application.Models.DataTransferObjects.Messages;
+using Messenger.Application.Models.Results;
 using Messenger.Application.Validators.Messages;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;

@@ -1,8 +1,8 @@
-﻿using Messenger.Application.Common.Results;
-using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.DataTransferObjects.Auth.Google;
-using Messenger.Application.DataTransferObjects.CommonOptions;
-using Messenger.Application.Helpers.PasswordHasher;
+﻿using Messenger.Application.Helpers.PasswordHasher;
+using Messenger.Application.Models.DataTransferObjects.Auth;
+using Messenger.Application.Models.DataTransferObjects.Auth.Google;
+using Messenger.Application.Models.DataTransferObjects.CommonOptions;
+using Messenger.Application.Models.Results;
 using Messenger.Application.Services.Token;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Enums;

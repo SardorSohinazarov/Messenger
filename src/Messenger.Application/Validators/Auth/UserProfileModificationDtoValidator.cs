@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
+using Messenger.Application.Models.DataTransferObjects.Auth.UserProfiles;
 
 namespace Messenger.Application.Validators.Auth
 {

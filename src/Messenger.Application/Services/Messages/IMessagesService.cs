@@ -1,5 +1,5 @@
-﻿using Messenger.Application.Common.Results;
-using Messenger.Application.DataTransferObjects.Messages;
+﻿using Messenger.Application.Models.DataTransferObjects.Messages;
+using Messenger.Application.Models.Results;
 using Messenger.Domain.Entities;
 
 namespace Messenger.Application.Services.Messages

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
-using Messenger.Application.DataTransferObjects.Chats;
-using Messenger.Application.DataTransferObjects.ChatUsers;
-using Messenger.Application.DataTransferObjects.Messages;
-using Messenger.Application.DataTransferObjects.Users;
+using Messenger.Application.Models.DataTransferObjects.Auth.UserProfiles;
+using Messenger.Application.Models.DataTransferObjects.Chats;
+using Messenger.Application.Models.DataTransferObjects.ChatUsers;
+using Messenger.Application.Models.DataTransferObjects.Messages;
+using Messenger.Application.Models.DataTransferObjects.Users;
 using Messenger.Domain.Entities;
 
 namespace Messenger.Application.Common

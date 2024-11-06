@@ -1,4 +1,4 @@
-﻿using Messenger.Application.DataTransferObjects.Auth;
+﻿using Messenger.Application.Models.DataTransferObjects.Auth;
 using Messenger.Domain.Entities;
 
 namespace Messenger.Application.Services.Token

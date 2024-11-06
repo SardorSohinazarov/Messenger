@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Messenger.Application.DataTransferObjects.Chats;
+using Messenger.Application.Models.DataTransferObjects.Chats;
 
 namespace Messenger.Application.Validators.Chats
 {

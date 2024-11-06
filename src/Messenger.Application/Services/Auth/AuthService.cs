@@ -1,5 +1,4 @@
-﻿using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.Helpers.PasswordHasher;
+﻿using Messenger.Application.Helpers.PasswordHasher;
 using Messenger.Application.Services.Email;
 using Messenger.Application.Services.Token;
 using Messenger.Domain.Entities;
@@ -13,7 +12,8 @@ using ValidationException = FluentValidation.ValidationException;
 using Messenger.Application.Validators.Auth;
 using Messenger.Domain.Enums;
 using Microsoft.Extensions.Caching.Memory;
-using Messenger.Application.Common.Results;
+using Messenger.Application.Models.DataTransferObjects.Auth;
+using Messenger.Application.Models.Results;
 
 namespace Messenger.Application.Services.Auth
 {

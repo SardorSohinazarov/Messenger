@@ -1,6 +1,6 @@
-﻿using Messenger.Application.Common.Results;
-using Messenger.Application.DataTransferObjects.Chats;
-using Messenger.Application.DataTransferObjects.ChatUsers;
+﻿using Messenger.Application.Models.DataTransferObjects.Chats;
+using Messenger.Application.Models.DataTransferObjects.ChatUsers;
+using Messenger.Application.Models.Results;
 
 namespace Messenger.Application.Services.ChatUsers
 {

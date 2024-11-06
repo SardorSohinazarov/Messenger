@@ -1,7 +1,7 @@
-﻿using Messenger.Application.Common.Results;
-using Messenger.Application.DataTransferObjects.Chats;
-using Messenger.Application.DataTransferObjects.Filters;
-using Messenger.Application.DataTransferObjects.Users;
+﻿using Messenger.Application.DataTransferObjects.Filters;
+using Messenger.Application.Models.DataTransferObjects.Chats;
+using Messenger.Application.Models.DataTransferObjects.Users;
+using Messenger.Application.Models.Results;
 using Messenger.Domain.Entities;
 
 namespace Messenger.Application.Services.Chats

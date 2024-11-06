@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Messenger.Application.Common.Results;
-using Messenger.Application.DataTransferObjects.Chats;
-using Messenger.Application.DataTransferObjects.ChatUsers;
 using Messenger.Application.Helpers.UserContext;
+using Messenger.Application.Models.DataTransferObjects.Chats;
+using Messenger.Application.Models.DataTransferObjects.ChatUsers;
+using Messenger.Application.Models.Results;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Enums;
 using Messenger.Domain.Exceptions;

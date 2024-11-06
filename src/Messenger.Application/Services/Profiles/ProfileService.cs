@@ -1,6 +1,4 @@
-﻿using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
-using Messenger.Application.DataTransferObjects.Auth;
-using Messenger.Application.Validators.Auth;
+﻿using Messenger.Application.Validators.Auth;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
 using AutoMapper;
@@ -11,7 +9,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ValidationException = FluentValidation.ValidationException;
 using Messenger.Domain.Exceptions;
-using Messenger.Application.Common.Results;
+using Messenger.Application.Models.DataTransferObjects.Auth;
+using Messenger.Application.Models.DataTransferObjects.Auth.UserProfiles;
+using Messenger.Application.Models.Results;
 
 namespace Messenger.Application.Services.Profiles
 {
