@@ -1,5 +1,4 @@
-﻿using Messenger.Application.DataTransferObjects.Auth.UserProfiles;
-using Messenger.Application.Models.DataTransferObjects.Auth;
+﻿using Messenger.Application.Models.DataTransferObjects.Auth;
 using Messenger.Application.Models.Results;
 
 namespace Messenger.Application.Services.Auth

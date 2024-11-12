@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Messenger.Application.Models.Pagination;
+using Messenger.Application.Models.Pagination.Cursor;
 using Messenger.Domain.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -44,44 +45,46 @@ namespace Messenger.Application.Extensions
             this IQueryable<T> source,
             HttpContext httpContext,
             int pageSize,
-            string previousCursor = null,
-            string nextCursor = null) where T : class, IAuditable
+            DateTime previousCursor,
+            DateTime nextCursor) where T : class, IAuditable
         {
+            if (pageSize > maxPageSize)
+                throw new ValidationException($"Page size should be less than {maxPageSize}");
+
             var totalCount = await source.CountAsync();
 
-            DateTime decodedPreviousCursor = previousCursor != null
-                ? CursorPaginationMetadata.DecodeCursor(previousCursor)
-                : DateTime.MinValue;
+            if (previousCursor != default)
+                source = source.Where(item => item.CreatedAt > previousCursor);
+            else if (nextCursor != default)
+                source = source.Where(item => item.CreatedAt < nextCursor);
 
-            DateTime decodedNextCursor = nextCursor != null
-                ? CursorPaginationMetadata.DecodeCursor(nextCursor) 
-                : DateTime.MinValue;
-
-            if (decodedPreviousCursor != DateTime.MinValue)
-                source = source.Where(item => item.CreatedAt > decodedPreviousCursor);
-                                                               // 10 dan yangilar
-            else if (decodedNextCursor != DateTime.MinValue)
-                source = source.Where(item => item.CreatedAt < decodedNextCursor);
-            // 9 dan eskilar
-
-            List<T> items = source
-                .OrderByDescending(item => item.CreatedAt)
-                .Take(pageSize + 1)
-                .ToList(); // 10, 9 , 8                       // 8 7 6
+            List<T> items = null;
+            if(previousCursor != default)
+            {
+                items = source
+                    .OrderBy(item => item.CreatedAt)
+                    .Take(pageSize + 1)
+                    .ToList();
+            }
+            else
+            {
+                items = source
+                    .OrderByDescending(item => item.CreatedAt)
+                    .Take(pageSize + 1)
+                    .ToList();
+            }
 
             bool hasMoreItems = items.Count > pageSize;
 
             if (hasMoreItems)
-                items = items.Take(pageSize).ToList(); // 10 , 9 // 8 7
+                items = items.Take(pageSize).ToList();
 
-            // 10
-            var firstCursor = items.FirstOrDefault() != null ? items.First().CreatedAt : DateTime.MinValue;
-            // 9
-            var lastCursor = items.LastOrDefault() != null ? items.Last().CreatedAt : DateTime.MinValue;
+            var firstCursor = items.FirstOrDefault() != null ? items.First().CreatedAt : default;
+            var lastCursor = items.LastOrDefault() != null ? items.Last().CreatedAt : default;
 
             var metadata = new CursorPaginationMetadata(
-                previous: firstCursor != DateTime.MinValue ? CursorPaginationMetadata.EncodeCursor(firstCursor) : null,
-                next: lastCursor != DateTime.MinValue && hasMoreItems ? CursorPaginationMetadata.EncodeCursor(lastCursor) : null,
+                previous: firstCursor,
+                next: lastCursor,
                 pageSize: pageSize,
                 hasMorePages: hasMoreItems,
                 totalCount: totalCount

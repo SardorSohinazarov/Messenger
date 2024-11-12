@@ -23,10 +23,10 @@ namespace Messenger.Api.Controllers
             return Ok(messages);
         }
 
-        [HttpGet("chat/{chatId}")]
-        public async Task<IActionResult> GetMessagesAsync(long chatId)
+        [HttpGet("chat")]
+        public async Task<IActionResult> GetMessagesAsync([FromQuery] MessagesPaginationSelectingByChatDto messagesPaginationSelectingByChatDto)
         {
-            var messages = await _messagesService.GetMessagesAsync(chatId);
+            var messages = await _messagesService.GetMessagesAsync(messagesPaginationSelectingByChatDto);
 
             return Ok(messages);
         }

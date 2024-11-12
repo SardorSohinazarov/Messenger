@@ -1,5 +1,4 @@
-﻿using Messenger.Application.DataTransferObjects.Auth.Google;
-using Messenger.Application.Models.DataTransferObjects.CommonOptions;
+﻿using Messenger.Application.Models.DataTransferObjects.CommonOptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;

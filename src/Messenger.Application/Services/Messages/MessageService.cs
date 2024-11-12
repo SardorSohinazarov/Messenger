@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Messenger.Application.Extensions;
 using Messenger.Application.Helpers.UserContext;
 using Messenger.Application.Models.DataTransferObjects.Messages;
 using Messenger.Application.Models.Results;
@@ -7,6 +8,7 @@ using Messenger.Application.Validators.Messages;
 using Messenger.Domain.Entities;
 using Messenger.Domain.Exceptions;
 using Messenger.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ValidationException = FluentValidation.ValidationException;
 
@@ -16,16 +18,19 @@ namespace Messenger.Application.Services.Messages
     {
         private readonly MessengerDbContext _messengerDbContext;
         private readonly IUserContextService _userContextService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
         public MessageService(
             MessengerDbContext messengerDbContext,
             IUserContextService userContextService,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _messengerDbContext = messengerDbContext;
             _userContextService = userContextService;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Result<MessageViewModel>> CreateMessageAsync(MessageCreationDto messageCreationDto)
@@ -96,20 +101,33 @@ namespace Messenger.Application.Services.Messages
 
         public async Task<Result<List<Message>>> GetMessagesAsync()
         {
-            var messages = await _messengerDbContext.Messages.ToListAsync();
+            var queryablePagedList = await _messengerDbContext.Messages
+                .ToPagedListAsync(
+                    httpContext: _httpContextAccessor.HttpContext,
+                    pageIndex: 1,
+                    pageSize: 20);
+
+            var messages = await queryablePagedList
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
 
             return Result<List<Message>>.Success(messages);
         }
 
-        public async Task<Result<List<MessageViewModel>>> GetMessagesAsync(long chatId)
+        public async Task<Result<List<MessageViewModel>>> GetMessagesAsync(MessagesPaginationSelectingByChatDto messagesPaginationSelectingByChatDto)
         {
-            var messages = await _messengerDbContext.Messages
+            var cursorPagedList = await _messengerDbContext.Messages
                 .Include(x => x.From)
-                .Where(x => x.ChatId == chatId)
-                .ToListAsync();
+                .Where(x => x.ChatId == messagesPaginationSelectingByChatDto.ChatId)
+                .ToCursorPagedListAsync(
+                    httpContext: _httpContextAccessor.HttpContext,
+                    pageSize: messagesPaginationSelectingByChatDto.PageSize,
+                    previousCursor: messagesPaginationSelectingByChatDto.Previous,
+                    nextCursor: messagesPaginationSelectingByChatDto.Next);
 
-            var messageViewModels = _mapper.Map<List<MessageViewModel>>(messages);
-            return Result<List<MessageViewModel>>.Success(messageViewModels);
+            var messagesViewModelList = _mapper.Map<List<MessageViewModel>>(cursorPagedList.OrderBy(x => x.CreatedAt));
+
+            return Result<List<MessageViewModel>>.Success(messagesViewModelList);
         }
 
         public async Task<Result<MessageViewModel>> UpdateMessageAsync(MessageModificationDto messageModificationDto)

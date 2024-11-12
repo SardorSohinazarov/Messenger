@@ -65,7 +65,7 @@ namespace Messenger.Infrastructure.Persistence
             {
                 if(userId is not null)
                     entry.Property(nameof(IAuditable.CreatedBy)).CurrentValue = userId.Value;
-                entry.Property(nameof(IAuditable.CreatedAt)).CurrentValue = DateTime.UtcNow;
+                entry.Property(nameof(IAuditable.CreatedAt)).CurrentValue = DateTime.Now.ToUniversalTime();
             }
 
             //update bo'layotgan entitylarni LastModifiedBy va LastModifiedAt propertylarini yangilaydi
