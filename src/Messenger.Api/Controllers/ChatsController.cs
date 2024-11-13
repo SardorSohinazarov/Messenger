@@ -80,9 +80,9 @@ namespace Messenger.Api.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllChatsAsync()
+        public async Task<IActionResult> GetAllChatsAsync([FromQuery] ChatsPaginationSelectionDto chatsPaginationSelectionDto)
         {
-            var chats = await _chatService.GetChatsAsync();
+            var chats = await _chatService.GetChatsAsync(chatsPaginationSelectionDto);
 
             return Ok(chats);
         }

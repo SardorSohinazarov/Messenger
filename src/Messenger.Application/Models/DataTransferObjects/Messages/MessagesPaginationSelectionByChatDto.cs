@@ -2,7 +2,7 @@
 
 namespace Messenger.Application.Models.DataTransferObjects.Messages
 {
-    public class MessagesPaginationSelectingByChatDto : CursorPaginationParam
+    public class MessagesPaginationSelectionByChatDto : CursorPaginationParam
     {
         public int ChatId { get; set; }
     }

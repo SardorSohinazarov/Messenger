@@ -16,17 +16,17 @@ namespace Messenger.Api.Controllers
             => _messagesService = messagesService;
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetMessagesAsync()
+        public async Task<IActionResult> GetMessagesAsync([FromQuery] MessagesPaginationSelectionDto messagesPaginationSelectionDto)
         {
-            var messages = await _messagesService.GetMessagesAsync();
+            var messages = await _messagesService.GetMessagesAsync(messagesPaginationSelectionDto);
 
             return Ok(messages);
         }
 
         [HttpGet("chat")]
-        public async Task<IActionResult> GetMessagesAsync([FromQuery] MessagesPaginationSelectingByChatDto messagesPaginationSelectingByChatDto)
+        public async Task<IActionResult> GetMessagesAsync([FromQuery] MessagesPaginationSelectionByChatDto messagesPaginationSelectionByChatDto)
         {
-            var messages = await _messagesService.GetMessagesAsync(messagesPaginationSelectingByChatDto);
+            var messages = await _messagesService.GetMessagesAsync(messagesPaginationSelectionByChatDto);
 
             return Ok(messages);
         }

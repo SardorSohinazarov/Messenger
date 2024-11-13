@@ -1,5 +1,4 @@
-﻿using Messenger.Application.DataTransferObjects.Filters;
-using Messenger.Application.Models.DataTransferObjects.Chats;
+﻿using Messenger.Application.Models.DataTransferObjects.Chats;
 using Messenger.Application.Models.DataTransferObjects.Users;
 using Messenger.Application.Models.Results;
 using Messenger.Domain.Entities;
@@ -21,6 +20,6 @@ namespace Messenger.Application.Services.Chats
         Task<Result<ChatDetailsViewModel>> UpdateChatAsync(ChatModificationDto chatModificationDto);  // chat malumotlarini edit qilish
         Task<Result<ChatViewModel>> DeleteAsync(long id);                                             // delete qilish
 
-        Task<Result<List<Chat>>> GetChatsAsync();                                                     // all chats - admin panel uchun
+        Task<Result<List<Chat>>> GetChatsAsync(ChatsPaginationSelectionDto chatsPaginationSelectionDto);                                                     // all chats - admin panel uchun
     }
 }

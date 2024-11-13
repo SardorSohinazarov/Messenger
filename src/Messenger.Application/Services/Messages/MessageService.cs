@@ -99,13 +99,13 @@ namespace Messenger.Application.Services.Messages
             return Result<MessageViewModel>.Success(messageViewModel);
         }
 
-        public async Task<Result<List<Message>>> GetMessagesAsync()
+        public async Task<Result<List<Message>>> GetMessagesAsync(MessagesPaginationSelectionDto messagesPaginationSelectionDto)
         {
             var queryablePagedList = await _messengerDbContext.Messages
                 .ToPagedListAsync(
                     httpContext: _httpContextAccessor.HttpContext,
-                    pageIndex: 1,
-                    pageSize: 20);
+                    pageIndex: messagesPaginationSelectionDto.Index,
+                    pageSize: messagesPaginationSelectionDto.Size);
 
             var messages = await queryablePagedList
                 .OrderByDescending(x => x.CreatedAt)
@@ -114,16 +114,16 @@ namespace Messenger.Application.Services.Messages
             return Result<List<Message>>.Success(messages);
         }
 
-        public async Task<Result<List<MessageViewModel>>> GetMessagesAsync(MessagesPaginationSelectingByChatDto messagesPaginationSelectingByChatDto)
+        public async Task<Result<List<MessageViewModel>>> GetMessagesAsync(MessagesPaginationSelectionByChatDto messagesPaginationSelectionByChatDto)
         {
             var cursorPagedList = await _messengerDbContext.Messages
                 .Include(x => x.From)
-                .Where(x => x.ChatId == messagesPaginationSelectingByChatDto.ChatId)
+                .Where(x => x.ChatId == messagesPaginationSelectionByChatDto.ChatId)
                 .ToCursorPagedListAsync(
                     httpContext: _httpContextAccessor.HttpContext,
-                    pageSize: messagesPaginationSelectingByChatDto.PageSize,
-                    previousCursor: messagesPaginationSelectingByChatDto.Previous,
-                    nextCursor: messagesPaginationSelectingByChatDto.Next);
+                    pageSize: messagesPaginationSelectionByChatDto.PageSize,
+                    previousCursor: messagesPaginationSelectionByChatDto.Previous,
+                    nextCursor: messagesPaginationSelectionByChatDto.Next);
 
             var messagesViewModelList = _mapper.Map<List<MessageViewModel>>(cursorPagedList.OrderBy(x => x.CreatedAt));
 

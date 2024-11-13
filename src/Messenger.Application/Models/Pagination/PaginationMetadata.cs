@@ -19,12 +19,10 @@
         {
             get => CurrentPage < PageCount;
         }
+
         public bool HasPreviousPage
         {
-            get
-            {
-                return CurrentPage > 1 && CurrentPage <= PageCount + 1;
-            }
+            get => CurrentPage > 1 && CurrentPage <= PageCount + 1;
         }
     }
 }

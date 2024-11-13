@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Messenger.Application.Extensions;
 using Messenger.Application.Helpers.UserContext;
 using Messenger.Application.Models.DataTransferObjects.Chats;
 using Messenger.Application.Models.DataTransferObjects.Messages;
@@ -110,7 +111,8 @@ namespace Messenger.Application.Services.Chats
             var chats = await _messengerDbContext.Chats
                 .AsNoTracking()
                 .Where(x => x.Type != EChatType.Private 
-                         && EF.Functions.Like(x.Title, key))
+                         && EF.Functions.ILike(x.Title, key)
+                         && EF.Functions.ILike(x.UserName, key))
                 .ToListAsync();
 
             var chatViewModels = _mapper.Map<List<ChatViewModel>>(chats);
@@ -126,10 +128,9 @@ namespace Messenger.Application.Services.Chats
 
             var users = await _messengerDbContext.Users
                 .AsNoTracking()
-                .Where(x => EF.Functions.Like(x.FirstName, key)
-                         || EF.Functions.Like(x.LastName, key)
-                         || EF.Functions.Like(x.UserName, key)
-                         || EF.Functions.Like(x.Email, key)
+                .Where(x => EF.Functions.ILike(x.FirstName, key)
+                         || EF.Functions.ILike(x.LastName, key)
+                         || EF.Functions.ILike(x.UserName, key)
                 ).ToListAsync();
 
             var userViewModels = _mapper.Map<List<UserViewModel>>(users);
@@ -265,9 +266,17 @@ namespace Messenger.Application.Services.Chats
             return Result<ChatViewModel>.Success(chatViewModel);
         }
 
-        public async Task<Result<List<Chat>>> GetChatsAsync()
+        public async Task<Result<List<Chat>>> GetChatsAsync(ChatsPaginationSelectionDto chatsPaginationSelectionDto)
         {
-            var chats = await _messengerDbContext.Chats.ToListAsync(); // admin panel sifatida
+            var queryablePagedList = await _messengerDbContext.Chats
+                .ToPagedListAsync(
+                    httpContext: _httpContextAccessor.HttpContext,
+                    pageIndex: chatsPaginationSelectionDto.Index,
+                    pageSize: chatsPaginationSelectionDto.Size
+                );
+
+            var chats = await queryablePagedList.ToListAsync();
+
             return Result<List<Chat>>.Success(chats);
         }
 
