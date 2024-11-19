@@ -4,6 +4,7 @@ using Messenger.Api.Extensions;
 using System.Text.Json.Serialization;
 using Messenger.Api.Middlewares;
 using Messenger.Application.Models.DataTransferObjects.CommonOptions;
+using Messenger.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -44,5 +47,7 @@ app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
