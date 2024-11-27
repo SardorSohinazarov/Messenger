@@ -114,11 +114,11 @@ namespace Messenger.Application.Services.Messages
             return Result<List<Message>>.Success(messages);
         }
 
-        public async Task<Result<List<MessageViewModel>>> GetMessagesAsync(MessagesPaginationSelectionByChatDto messagesPaginationSelectionByChatDto)
+        public async Task<Result<List<MessageViewModel>>> GetMessagesAsync(MessagesPaginationSelectionByChatDto messagesPaginationSelectionByChatDto, long chatId)
         {
             var cursorPagedList = await _messengerDbContext.Messages
                 .Include(x => x.From)
-                .Where(x => x.ChatId == messagesPaginationSelectionByChatDto.ChatId)
+                .Where(x => x.ChatId ==chatId)
                 .ToCursorPagedListAsync(
                     httpContext: _httpContextAccessor.HttpContext,
                     pageSize: messagesPaginationSelectionByChatDto.PageSize,

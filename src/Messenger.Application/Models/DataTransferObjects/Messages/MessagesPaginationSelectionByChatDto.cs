@@ -4,6 +4,5 @@ namespace Messenger.Application.Models.DataTransferObjects.Messages
 {
     public class MessagesPaginationSelectionByChatDto : CursorPaginationParam
     {
-        public int ChatId { get; set; }
     }
 }

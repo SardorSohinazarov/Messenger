@@ -8,7 +8,7 @@ namespace Messenger.Application.Services.Messages
     {
         Task<Result<MessageViewModel>> CreateMessageAsync(MessageCreationDto messageCreationDto);
         Task<Result<List<Message>>> GetMessagesAsync(MessagesPaginationSelectionDto messagesPaginationSelectionDto);
-        Task<Result<List<MessageViewModel>>> GetMessagesAsync(MessagesPaginationSelectionByChatDto messagesPaginationSelectionByChatDto);
+        Task<Result<List<MessageViewModel>>> GetMessagesAsync(MessagesPaginationSelectionByChatDto messagesPaginationSelectionByChatDto, long chatId);
         Task<Result<MessageViewModel>> GetMessageByIdAsync(Guid id);
         Task<Result<MessageViewModel>> UpdateMessageAsync(MessageModificationDto messageModificationDto);
         Task<Result<MessageViewModel>> DeleteMessageAsync(Guid id);
