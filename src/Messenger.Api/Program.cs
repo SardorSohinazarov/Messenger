@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Messenger.Api.Middlewares;
 using Messenger.Application.Models.DataTransferObjects.CommonOptions;
 using Messenger.Api.Hubs;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,14 +26,22 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
         builder => builder
-            .AllowAnyOrigin()
+            .WithOrigins("http://localhost:4200")
             .AllowAnyMethod()
+            .AllowCredentials()
             .AllowAnyHeader());
 });
 
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+          new[] { "application/octet-stream" });
+});
 builder.Services.AddSignalR();
 
 var app = builder.Build();
+
+app.UseResponseCompression();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
