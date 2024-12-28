@@ -58,7 +58,7 @@ namespace Messenger.Infrastructure.Persistence
                 .Entries<IAuditable>()
                 .Where(x => x.State == EntityState.Added);
 
-            var userIdString = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             long? userId = userIdString is not null ? long.Parse(userIdString) : null;
 
             foreach (var entry in newEntries)

@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Messenger.Api.Hubs
 {
-    //[Authorize]
+    [Authorize]
     public class ChatHub : Hub
     {
         private readonly MessengerDbContext _messengerDbContext;
