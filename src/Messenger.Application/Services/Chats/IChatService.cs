@@ -12,8 +12,7 @@ namespace Messenger.Application.Services.Chats
         Task<Result<ChatDetailsViewModel>> GetOrCreatePrivateChatAsync(long userId);                  // men qaysidur userga yozmoqchi bo'lsam uni userid
                                                                                               // sini jo'nataman va ikkalamizga bitta chat ochiladi
         Task<Result<ChatDetailsViewModel>> GetChatAsync(long id);                                     // get by id
-        Task<Result<List<ChatViewModel>>> SearchChatsAsync(string key);                                  // qidirishda
-        Task<Result<List<UserViewModel>>> SearchUsersAsync(string key);                                  // qidirishda
+        Task<Result<List<ChatViewModel>>> SearchChatsAsync(string key);                               // qidirishda
         Task<Result<List<ChatViewModel>>> GetUserChatsAsync();                                        // qo'shilgan hamma chatlar
         Task<Result<List<ChatViewModel>>> GetOwnerChatsAsync();                                       // mualliflik chatlari
         Task<Result<List<ChatViewModel>>> GetAdminChatsAsync();                                       // admin bo'lgan chatlari

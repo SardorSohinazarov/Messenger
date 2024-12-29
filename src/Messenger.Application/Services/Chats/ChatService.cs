@@ -119,24 +119,6 @@ namespace Messenger.Application.Services.Chats
             return Result<List<ChatViewModel>>.Success(chatViewModels);
         }
 
-        public async Task<Result<List<UserViewModel>>> SearchUsersAsync(string key)
-        {
-            if (string.IsNullOrWhiteSpace(key))
-                throw new ValidationException("Key null yoki bo'sh belgilarda iborat bo'lolmaydi");
-
-            key = $"%{key}%";
-
-            var users = await _messengerDbContext.Users
-                .AsNoTracking()
-                .Where(x => EF.Functions.ILike(x.FirstName, key)
-                         || EF.Functions.ILike(x.LastName, key)
-                         || EF.Functions.ILike(x.UserName, key)
-                ).ToListAsync();
-
-            var userViewModels = _mapper.Map<List<UserViewModel>>(users);
-            return Result<List<UserViewModel>>.Success(userViewModels);
-        }
-
         public async Task<Result<List<ChatViewModel>>> GetUserChatsAsync()
         {
             var userId = _userContextService.GetCurrentUserId();
