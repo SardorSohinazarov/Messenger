@@ -6,121 +6,163 @@ Bu loyiha real vaqtda chat funksiyalarini taqdim etadigan Messenger ilovasidir. 
 
 Ilovaning tahminiy tuzilishi quyidagicha:
 ```
-/src
-├── /Messenger.Api                           // Ilovaning kirish nuqtasi (Web API)
-│   ├── /Controllers                         // API controller'lari
-│   │   ├── AuthController.cs                // Autentifikatsiya funksiyalari uchun controller
-│   │   ├── ChatsController.cs               // Chatlar bilan ishlash uchun controller
-│   │   ├── ChatUsersController.cs           // Chat foydalanuvchilari bilan ishlash uchun controller
-│   │   └── MessagesController.cs            // Xabarlar bilan ishlash uchun controller
-│   ├── /Extensions                          // Kengaytmalar
-│   │   └── ServiceCollectionExtensions.cs   // Xizmatlarni ro'yxatga olish uchun kengaytma
-│   ├── appsettings.json                     // Ilova sozlamalari (bazaga ulanish, secret kalitlar va boshqalar)
-│   ├── Messenger.Api.http                   // HTTP so'rovlarini sinash uchun fayl
-│   └── Program.cs                           // Ilovani boshlaydigan asosiy fayl (Main)
-|
-├── /Messenger.Infrastructure             // Tashqi xizmatlar bilan ishlash qismi
-│   ├── /Persistence                      // Ma'lumotlar bilan ishlash
-│   │   ├── /Configurations               // Entity konfiguratsiyasi (EF Core uchun)
-│   │   │   ├── MessageConfiguration.cs   // Xabar entity konfiguratsiyasi
-│   │   │   └── ...                       // Qo'shimcha konfiguratsiyalar
-│   │   ├── /Repositories                 // Repository implementatsiyalari
-│   │   │   ├── UserRepository.cs         // Foydalanuvchilar repository
-│   │   │   ├── MessageRepository.cs      // Xabarlar repository
-│   │   │   └── ...                       // Qo'shimcha repository'lar
-│   └── ApplicationDbContext.cs          // Ma'lumotlar konteksti
-|
-├── /Messenger.Application                // Biznes qoidalari va xizmatlar
-│   ├── /Common                           // Umumiy xizmatlar yoki yordamchi kodlar
-│   │   └── MappingProfiles.cs            // AutoMapper profilari
-│   ├── /DataTransferObjects                // DTO'lar uchun katalog
-│   │   ├── /Auth                           // Autentifikatsiya bilan bog'liq DTO'lar
-|   |   │   ├── /Google                     // Google autentifikatsiyasi bilan bog'liq DTO'lar
-|   |   │   │   ├── GoogleLoginDto.cs       // Google login ma'lumotlari
-|   |   │   │   ├── GoogleOAuthOptions.cs   // Google OAuth sozlamalari
-|   |   │   │   └── GoogleUserInfo.cs       // Google foydalanuvchi ma'lumotlari
-|   |   │   ├── /UserProfiles               // Foydalanuvchi profili bilan bog'liq DTO'lar
-|   |   │   │   ├── UserProfile.cs          // Foydalanuvchi profili ma'lumotlari
-|   |   │   │   ├── UserProfileModificationDto.cs // Foydalanuvchi profilini tahrirlash uchun DTO
-|   |   │   │   ├── EmailConfirmationDto.cs // Elektron pochta tasdiqlash uchun DTO
-|   |   │   │   ├── LoginDto.cs             // Login uchun DTO
-|   |   │   │   ├── RefreshTokenDto.cs      // Refresh token uchun DTO
-|   |   │   │   ├── RegisterDto.cs          // Ro'yxatdan o'tish uchun DTO
-|   |   │   │   └── TokenDto.cs             // Token ma'lumotlari uchun DTO
-|   |   ├── /Chats                          // Chat bilan bog'liq DTO'lar
-|   |   │   ├── ChannelCreationDto.cs       // Kanal yaratish uchun DTO
-|   |   │   ├── ChatDetailsViewModel.cs     // Chat tafsilotlari uchun ViewModel
-|   |   │   ├── ChatInviteLinkViewModel.cs  // Chat taklif havolasi uchun ViewModel
-|   |   │   ├── ChatModificationDto.cs      // Chatni tahrirlash uchun DTO
-|   |   │   ├── ChatViewModel.cs            // Chat ko'rinishidagi ViewModel
-|   |   │   └── GroupCreationDto.cs         // Guruh yaratish uchun DTO
-|   |   ├── /ChatUsers                      // Chat foydalanuvchilari bilan bog'liq DTO'lar
-|   |   │   ├── ChatUserDto.cs              // Chat foydalanuvchisi uchun DTO
-|   |   │   └── ChatUserViewModel.cs        // Chat foydalanuvchi ko'rinishi uchun ViewModel
-|   |   ├── /CommonOptions                  // Umumiy sozlamalar uchun katalog
-|   |   │   ├── JwtSettings.cs              // JWT sozlamalari
-|   |   │   └── SmtpSettings.cs             // SMTP sozlamalari
-|   |   ├── /Filters                        // Filtrlash uchun katalog
-|   |   │   └── ChatFilter.cs               // Chat filtri uchun DTO
-|   |   ├── /Messages                       // Xabarlar bilan bog'liq DTO'lar
-|   |   │   ├── MessageCreationDto.cs       // Xabar yaratish uchun DTO
-|   |   │   ├── MessageModificationDto.cs   // Xabarni tahrirlash uchun DTO
-|   |   │   └── MessageViewModel.cs         // Xabar ko'rinishi uchun ViewModel
-|   |   └── /Users                          // Foydalanuvchilar bilan bog'liq DTO'lar
-|   |       └── UserViewModel.cs            // Foydalanuvchi ko'rinishi uchun ViewModel
-│   ├── /Extensions                          // Kengaytmalar
-│   │   └── FluentValidationExtensions.cs    // Fluent Validation kengaytmalari
-│   ├── /Helpers                             // Yordamchi xizmatlar
-│   │   ├── /PasswordHasher                  // Parolni hashlash xizmati
-│   │   │   ├── IPasswordHasher.cs           // Parol hashlash interfeysi
-│   │   │   └── PasswordHasher.cs            // Parol hashlash implementatsiyasi
-│   │   └── /UserContext                     // Foydalanuvchi konteksti xizmati
-│   │       ├── IUserContextService.cs       // Foydalanuvchi konteksti interfeysi
-│   │       └── UserContextService.cs        // Foydalanuvchi konteksti xizmati
-│   ├── /Services                         // Biznes qoidalarini amalga oshiruvchi xizmatlar
-│   │   ├── /Auth                            // Autentifikatsiya xizmatlari
-│   │   │   ├── /Google                      // Google autentifikatsiyasi uchun xizmatlar
-│   │   │   │   ├── GoogleAuthService.cs     // Google autentifikatsiyasi xizmati
-│   │   │   │   └── IGoogleAuthService.cs    // Google autentifikatsiyasi interfeysi
-│   │   │   ├── AuthService.cs               // Autentifikatsiya xizmati
-│   │   │   └── IAuthService.cs              // Autentifikatsiya interfeysi
-│   │   ├── /Chats                           // Chat bilan ishlash uchun xizmatlar
-│   │   │   ├── ChatService.cs               // Chat xizmati
-│   │   │   └── IChatService.cs              // Chat interfeysi
-│   │   ├── /ChatUsers                       // Chat foydalanuvchilari bilan ishlash uchun xizmatlar
-│   │   │   ├── ChatUserService.cs           // Chat foydalanuvchisi xizmati
-│   │   │   └── IChatUserService.cs          // Chat foydalanuvchisi interfeysi
-│   │   ├── /Email                           // Elektron pochta xizmati
-│   │   │   ├── EmailService.cs              // Elektron pochta xizmati
-│   │   │   └── IEmailService.cs             // Elektron pochta interfeysi
-│   │   ├── /Messages                        // Xabarlar bilan ishlash uchun xizmatlar
-│   │   │   ├── MessageService.cs            // Xabar xizmati
-│   │   │   └── IMessageService.cs           // Xabar interfeysi
-│   │   └── /Token                           // Token bilan ishlash uchun xizmatlar
-│   │       ├── TokenService.cs              // Token xizmati
-│   │       └── ITokenService.cs             // Token interfeysi
-|   ├── /Validators                          // Validatsiya uchun xizmatlar
-|   │   ├── LoginDtoValidator.cs             // Login qilish DTO uchun validatsiya
-|   │   └── ...                              // Boshqa DTO'lar uchun validatsiyalar
-│   └── Application.csproj               // Application loyihasining fayli
-|
-├── /Messenger.Domain                        // Ilovaning domen modeli (entity'lar, interfeyslar, biznes qoidalari)
-│   ├── /Entities                            // Domain modellar (Entity'lar)
-|   |   ├── Chat.cs                          // Chat modeli
-│   │   ├── LinkTables.cs                    // Many to Many relationship dagi yordamchi tablelar
-│   │   ├── Message.cs                       // Xabar modeli
-│   │   ├── Update.cs                        // Update modeli
-│   │   └── User.cs                          // Foydalanuvchi modeli
-│   └── Domain.csproj                    // Domain loyihasining fayli
-
-/tests                                   // Testlar (unit va integration testlar)
-├── /UnitTests                           // Unit testlar
-│   ├── UserServiceTests.cs               // Foydalanuvchilar xizmati uchun unit testlar
-│   ├── ChatServiceTests.cs               // Chat xizmati uchun unit testlar
-│   └── ...                               // Qo'shimcha unit testlar
-└── /IntegrationTests                    // Integration testlar
-     ├── ChatControllerTests.cs           // Chat controlleri uchun integration testlar
-     └── ...                               // Qo'shimcha integration testlar
-
-Messenger.sln                            // Ilovaning umumiy yechimi (solution)
+Directory structure:
+└── SardorSohinazarov-Messenger/
+    ├── README.md
+    ├── Messenger.sln
+    └── src/
+        ├── Messenger.Api/
+        │   ├── Messenger.Api.csproj
+        │   ├── Messenger.Api.http
+        │   ├── Program.cs
+        │   ├── appsettings.json
+        │   ├── Controllers/
+        │   │   ├── AuthController.cs
+        │   │   ├── ChatUsersController.cs
+        │   │   ├── ChatsController.cs
+        │   │   ├── MessagesController.cs
+        │   │   ├── ProfilesController.cs
+        │   │   └── UsersController.cs
+        │   ├── Extensions/
+        │   │   └── ServiceCollectionExtensions.cs
+        │   ├── Hubs/
+        │   │   └── ChatHub.cs
+        │   ├── Middlewares/
+        │   │   └── ExceptionHandlingMiddleware.cs
+        │   └── Properties/
+        │       └── launchSettings.json
+        ├── Messenger.Application/
+        │   ├── DependencyInjection.cs
+        │   ├── Messenger.Application.csproj
+        │   ├── Common/
+        │   │   └── MappingProfiles.cs
+        │   ├── Extensions/
+        │   │   └── QueryableExtensions.cs
+        │   ├── Helpers/
+        │   │   ├── PasswordHasher/
+        │   │   │   ├── IPasswordHasher.cs
+        │   │   │   └── PasswordHasher.cs
+        │   │   └── UserContext/
+        │   │       ├── IUserContextService.cs
+        │   │       └── UserContextService.cs
+        │   ├── Models/
+        │   │   ├── DataTransferObjects/
+        │   │   │   ├── Auth/
+        │   │   │   │   ├── EmailConfirmationDto.cs
+        │   │   │   │   ├── LoginDto.cs
+        │   │   │   │   ├── RefreshTokenDto.cs
+        │   │   │   │   ├── RegisterDto.cs
+        │   │   │   │   ├── TokenDto.cs
+        │   │   │   │   ├── Google/
+        │   │   │   │   │   ├── GoogleLoginDto.cs
+        │   │   │   │   │   ├── GoogleOAuthOptions.cs
+        │   │   │   │   │   └── GoogleUserInfo.cs
+        │   │   │   │   └── UserProfiles/
+        │   │   │   │       ├── UserProfile.cs
+        │   │   │   │       └── UserProfileModificationDto.cs
+        │   │   │   ├── ChatUsers/
+        │   │   │   │   ├── ChatUserDto.cs
+        │   │   │   │   └── ChatUserViewModel.cs
+        │   │   │   ├── Chats/
+        │   │   │   │   ├── ChannelCreationDto.cs
+        │   │   │   │   ├── ChatDetailsViewModel.cs
+        │   │   │   │   ├── ChatInviteLinkViewModel.cs
+        │   │   │   │   ├── ChatModificationDto.cs
+        │   │   │   │   ├── ChatViewModel.cs
+        │   │   │   │   ├── ChatsPaginationSelectionDto.cs
+        │   │   │   │   ├── GroupCreationDto.cs
+        │   │   │   │   └── UsersFilterModel.cs
+        │   │   │   ├── CommonOptions/
+        │   │   │   │   ├── JwtSettings.cs
+        │   │   │   │   └── SmtpSettings.cs
+        │   │   │   ├── Filters/
+        │   │   │   │   └── ChatFilter.cs
+        │   │   │   ├── Messages/
+        │   │   │   │   ├── MessageCreationDto.cs
+        │   │   │   │   ├── MessageModificationDto.cs
+        │   │   │   │   ├── MessageViewModel.cs
+        │   │   │   │   ├── MessagesPaginationSelectionByChatDto.cs
+        │   │   │   │   └── MessagesPaginationSelectionDto.cs
+        │   │   │   └── Users/
+        │   │   │       └── UserViewModel.cs
+        │   │   ├── Pagination/
+        │   │   │   ├── PaginationMetadata.cs
+        │   │   │   ├── PaginationParam.cs
+        │   │   │   └── Cursor/
+        │   │   │       ├── CursorPaginationMetadata.cs
+        │   │   │       └── CursorPaginationParam.cs
+        │   │   └── Results/
+        │   │       └── Result.cs
+        │   ├── Services/
+        │   │   ├── Auth/
+        │   │   │   ├── AuthService.cs
+        │   │   │   ├── IAuthService.cs
+        │   │   │   └── Google/
+        │   │   │       ├── GoogleAuthService.cs
+        │   │   │       └── IGoogleAuthService.cs
+        │   │   ├── ChatUsers/
+        │   │   │   ├── ChatUserService.cs
+        │   │   │   └── IChatUserService.cs
+        │   │   ├── Chats/
+        │   │   │   ├── ChatService.cs
+        │   │   │   └── IChatService.cs
+        │   │   ├── Email/
+        │   │   │   ├── EmailService.cs
+        │   │   │   └── IEmailService.cs
+        │   │   ├── Messages/
+        │   │   │   ├── IMessagesService.cs
+        │   │   │   └── MessageService.cs
+        │   │   ├── Profiles/
+        │   │   │   ├── IProfileService.cs
+        │   │   │   └── ProfileService.cs
+        │   │   ├── Token/
+        │   │   │   ├── ITokenService.cs
+        │   │   │   └── TokenService.cs
+        │   │   └── Users/
+        │   │       ├── IUserService.cs
+        │   │       └── UserService.cs
+        │   └── Validators/
+        │       ├── Auth/
+        │       │   ├── EmailConfirmationDtoValidator.cs
+        │       │   ├── LoginDtoValidator.cs
+        │       │   ├── RefreshTokenDtoValidator.cs
+        │       │   ├── RegisterDtoValidator.cs
+        │       │   └── UserProfileModificationDtoValidator.cs
+        │       ├── Chats/
+        │       │   ├── ChannelCreationDtoValidator.cs
+        │       │   ├── ChatModificationDtoValidator.cs
+        │       │   └── GroupCreationDtoValidator.cs
+        │       └── Messages/
+        │           ├── MessageCreationDtoValidator.cs
+        │           └── MessageModificationDtoValidator.cs
+        ├── Messenger.Domain/
+        │   ├── Messenger.Domain.csproj
+        │   ├── Common/
+        │   │   ├── BaseEntity.cs
+        │   │   ├── IAuditable.cs
+        │   │   └── ISoftDeletable.cs
+        │   ├── Entities/
+        │   │   ├── Chat.cs
+        │   │   ├── LinkTables.cs
+        │   │   ├── Message.cs
+        │   │   ├── Update.cs
+        │   │   └── User.cs
+        │   ├── Enums/
+        │   │   ├── EChatType.cs
+        │   │   └── ELoginProvider.cs
+        │   └── Exceptions/
+        │       ├── ForbiddenException.cs
+        │       └── NotFoundException.cs
+        └── Messenger.Infrastructure/
+            ├── DependencyInjection.cs
+            ├── Messenger.Infrastructure.csproj
+            ├── Migrations/
+            ...
+            └── Persistence/
+                ├── MessengerDbContext.cs
+                └── Configurations/
+                    ├── ChatConfiguration.cs
+                    ├── ChatUserConfiguration.cs
+                    ├── MessageConfiguration.cs
+                    └── UserConfiguration.cs
 ```
